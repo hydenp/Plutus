@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "680629876142",
+    "project_id": "plutus-e7f88",
+    "storage_bucket": "plutus-e7f88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680629876142:android:0ab55efc62d60c4b24043f",
+        "android_client_info": {
+          "package_name": "com.plutus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680629876142-aljcj3e36pinbhe9p4hg58cmcjvtesb9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHO9TEdNDBW3fw7GFijhAxNiOjAyuijvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "680629876142-aljcj3e36pinbhe9p4hg58cmcjvtesb9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "680629876142-1i1tlf5ildup571mhva3otqmhmtbrg7n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gama.plutus"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
