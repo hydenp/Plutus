@@ -2,35 +2,33 @@
 import 'react-native-gesture-handler';
 import React, { useContext, useState, useEffect } from "react";
 import { NavigationContainer } from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import AuthStack from './AuthStack';
-import LoginScreen from "../screens/LoginScreen";
-import SignupScreen from '../screens/SignupScreen';
+import auth from '@react-native-firebase/auth';
+import {AuthContext} from './AuthProvider';
 
-const Stack = createStackNavigator();
+import AuthStack from './AuthStack';
+import AppStack from './AppStack';
+
 
 const Routes = () => {
+
+    const {user, setUser} = useContext(AuthContext);
+    const [initializing, setInitializing] = useState(true);
+
+    const onAuthStateChanged = (user) => {
+        setUser(user);
+        if (initializing) setInitializing(false);
+    }
+
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return subscriber;
+    }, []);
+
+    if (initializing) return null;
+
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen
-                    name="Login"
-                    component={LoginScreen}
-                    options={{header: () => null}}
-                />
-                <Stack.Screen
-                    name="Signup"
-                    component={SignupScreen}
-                    options={({navigation}) => ({
-                        title: '',
-                        headerStyle: {
-                            backgroundColor: '#f9fafd', //CHANGE THIS LATER, SELECT SAME COLOR AS BACKGROUND
-                            shadowColor: '#f9fafd', //CHANGE THIS LATER, SELECT SAME COLOR AS BACKGROUND
-                            elevation: 0,
-                        },
-                    })}
-                />
-            </Stack.Navigator>
+            { user ? <AppStack/> : <AuthStack />}
         </NavigationContainer>
     );
 };
