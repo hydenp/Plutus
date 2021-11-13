@@ -5,12 +5,18 @@ import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
 
+
+import HoldingCard from '../components/HoldingCard';
+
 const HomeScreen = ({navigation}) => {
      const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
 
     return(
         <View style={styles.container}>
             <Text> Home Screen </Text>
+
+            <HoldingCard price={'10'}/>
+
             <FormButton buttonTitle="Logout" onPress={() => logout()} />
         </View>
     );
