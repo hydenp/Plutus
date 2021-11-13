@@ -3,7 +3,7 @@ import React, {useState, useContext} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
-import AppStack from '../navigation/AppStack'
+import AppStack from '../navigation/AppStack';
 import { AuthContext } from '../navigation/AuthProvider';
 
 const SignupScreen = ({navigation}) => {
@@ -12,7 +12,7 @@ const SignupScreen = ({navigation}) => {
 
     const {register} = useContext(AuthContext);
 
-    return(
+    return (
         <View style={styles.container}>
             <Text style={styles.text}>Create an account</Text>
             <FormInput

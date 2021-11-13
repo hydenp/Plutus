@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable prettier/prettier */
-import React, {createContext, useState} from "react";
-import auth from "@react-native-firebase/auth";
+import React, {createContext, useState} from 'react';
+import auth from '@react-native-firebase/auth';
 
 export const AuthContext = createContext();
 
