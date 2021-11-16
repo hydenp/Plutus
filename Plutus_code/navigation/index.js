@@ -5,7 +5,7 @@ import { AuthProvider } from './AuthProvider';
 
 const Providers = () => {
     return (
-        <AuthProvider> 
+        <AuthProvider>
             <Routes />
         </AuthProvider>
     );

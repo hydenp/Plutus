@@ -7,7 +7,7 @@ import SignupScreen from './SignupScreen';
 import { AuthContext } from '../navigation/AuthProvider';
 
 const LoginScreen = ({navigation}) => {
-    const [email, setEmail] = useState(); 
+    const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
     const {login} = useContext(AuthContext);
@@ -33,7 +33,7 @@ const LoginScreen = ({navigation}) => {
                 buttonTitle="Sign In"
                 onPress={() => login(email, password)}
             />
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={styles.forgotButton}
                 onPress={() => navigation.navigate('Signup')}>
                 <Text style={styles.navButtonText}>
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       padding: 20,
-      paddingTop: 50
+      paddingTop: 50,
     },
     logo: {
       height: 150,
