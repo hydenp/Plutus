@@ -16,6 +16,9 @@ const HomeScreen = ({navigation}) => {
   const [numShares, setNumShares] = useState(null);
   const [avgPrice, setAvgPrice] = useState(null);
   const [tag, setTag] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [post, setPost] = useState(null);
+
   const modalizeRef = useRef(null);
 
   //const ref = firebase.firestore().collection('assets');
@@ -48,21 +51,37 @@ const HomeScreen = ({navigation}) => {
       console.log('Something went wrong with added post to firestore.', error);
     });
   };
-  // const addAssets = () => {
-  //   ref
-  //     .doc()
-  //     .set({
-  //       userId: user.uid,
-  //       ticker: ticker,
-  //       numShare: numShares,
-  //       avgPrice: avgPrice,
-  //       tag: tag,
-  //     })
-  //     .catch((error) => {
-  //       console.log('Something went wrong with added post to firestore.',error);
-  //     });
-  // };
 
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const list = [];
+        await firestore()
+        .collection('assets')
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach(doc => {
+            const {ticker, numShare, avgPrice, tag, userId} = doc.data();
+            list.push({
+              ticker: ticker,
+              numShare: numShare,
+              avgPrice: avgPrice,
+              tag: tag,
+              userId: userId,
+             });
+          });
+        });
+        setPost(list);
+        if (loading){
+          setLoading(false);
+        }
+        console.log('Assets: ', list);
+      } catch (e) {
+        console.log('Fetch error is: ', e);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
       <View style={styles.container}>
