@@ -5,20 +5,34 @@ import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
 
-
-import HoldingCard from '../components/HoldingCard';
+import PositionCard from '../components/PositionCard';
 
 const HomeScreen = ({navigation}) => {
-     const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
+    const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
+
+    let state = {
+      holdings: [
+        {
+          id: 1,
+          symbol: 'AAPL',
+          shares: 2,
+        },
+        {
+          id: 2,
+          symbol: 'VOO',
+          shares: 2,
+        },
+      ],
+    };
 
     return(
-        <View style={styles.container}>
-            <Text> Home Screen </Text>
+      <View style={styles.container}>
+          <Text> Home Screen </Text>
 
-            <HoldingCard price={'10'}/>
+          <PositionCard holdings={state.holdings}/>
 
-            <FormButton buttonTitle="Logout" onPress={() => logout()} />
-        </View>
+          <FormButton buttonTitle="Logout" onPress={() => logout()} />
+      </View>
     );
 };
 
