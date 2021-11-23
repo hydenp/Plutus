@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect} from "react";
-import {View} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import LoginScreen from "../screens/LoginScreen";
-import SignupScreen from "../screens/SignupScreen";
+import LoginScreen from '../screens/LoginScreen';
+import SignupScreen from '../screens/SignupScreen';
 
 // import { AsyncStorage } from '@react-native-async-storage/async-storage';
 import { AsyncStorage } from 'react-native';
@@ -28,7 +27,7 @@ const AuthStack = () => {
     if (isFirstLaunch === null) {
         return null;
     }
-    else if (isFirstLaunch == true) {
+    else if (isFirstLaunch === true) {
         routeName = 'Login';
     }
     else {

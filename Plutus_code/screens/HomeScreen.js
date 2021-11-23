@@ -3,7 +3,6 @@ import React, {useState, useContext, useRef, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import firestore, { firebase } from '@react-native-firebase/firestore';
-//import firebase from '../src/firebase/config';
 
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
@@ -20,8 +19,6 @@ const HomeScreen = ({navigation}) => {
   const [post, setPost] = useState(null);
 
   const modalizeRef = useRef(null);
-
-  //const ref = firebase.firestore().collection('assets');
 
   const addAssets = async () => {
     console.log('Got to addAssets func');
@@ -58,6 +55,7 @@ const HomeScreen = ({navigation}) => {
         const list = [];
         await firestore()
         .collection('assets')
+        .where('userId', '==', user.uid)
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach(doc => {

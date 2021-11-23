@@ -11,7 +11,7 @@ const Stack = createStackNavigator();
 const AppStack = () => {
     return(
         <Stack.Navigator>
-            <Stack.Screen 
+            <Stack.Screen
                 name="Plutus"
                 component={HomeScreen}
                 options={{header: () => null}}
