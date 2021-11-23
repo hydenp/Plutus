@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect} from "react";
-import {View} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import LoginScreen from "../screens/LoginScreen";
+import LoginScreen from '../screens/LoginScreen';
+import SignupScreen from '../screens/SignupScreen';
 
 // import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import { AsyncStorage } from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -12,16 +13,16 @@ const AuthStack = () => {
     const [isFirstLaunch, setIsFirstLaunch] = useState(null);
     let routeName;
 
-    // useEffect(() => {
-    //     AsyncStorage.getItem('alreadyLaunched').then((value) => {
-    //         if (value == null){
-    //             AsyncStorage.setItem('alreadyLaunched', 'true');
-    //             setIsFirstLaunch(true);
-    //         } else {
-    //             setIsFirstLaunch(false);
-    //         }
-    //     });
-    // }, []);
+    useEffect(() => {
+        AsyncStorage.getItem('alreadyLaunched').then((value) => {
+            if (value == null){
+                AsyncStorage.setItem('alreadyLaunched', 'true');
+                setIsFirstLaunch(true);
+            } else {
+                setIsFirstLaunch(false);
+            }
+        });
+    }, []);
 
     if (isFirstLaunch === null) {
         return null;
@@ -34,13 +35,25 @@ const AuthStack = () => {
     }
 
     return (
-        <Stack.Navigator initialRouteName={"Login"}>
-            <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{header: () => null}}
-            />
-        </Stack.Navigator>
+        <Stack.Navigator>
+                <Stack.Screen
+                    name="Login"
+                    component={LoginScreen}
+                    options={{header: () => null}}
+                />
+                <Stack.Screen
+                    name="Signup"
+                    component={SignupScreen}
+                    options={({navigation}) => ({
+                        title: '',
+                        headerStyle: {
+                            backgroundColor: '#f9fafd', //CHANGE THIS LATER, SELECT SAME COLOR AS BACKGROUND
+                            shadowColor: '#f9fafd', //CHANGE THIS LATER, SELECT SAME COLOR AS BACKGROUND
+                            elevation: 0,
+                        },
+                    })}
+                />
+            </Stack.Navigator>
     );
 };
 

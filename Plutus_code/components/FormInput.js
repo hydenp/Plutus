@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import React from "react";
+import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import {windowHeight, windowWidth} from '../utils/Dimentions'
+import {windowHeight, windowWidth} from '../utils/Dimentions';
 
 const FormInput = ({labelValue, placeholder, ...rest}) => {
     return (
         <View style={styles.inputContainer} >
-            <TextInput style={StyleSheet.buttonText} 
+            <TextInput style={styles.input}
                 value={labelValue}
                 numberOfLines={1}
                 placeholder={placeholder}
@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
       padding: 10,
       flex: 1,
       fontSize: 16,
-      fontFamily: 'Lato-Regular',
       color: '#333',
       justifyContent: 'center',
       alignItems: 'center',

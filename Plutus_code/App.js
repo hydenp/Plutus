@@ -5,19 +5,6 @@ import Providers from './navigation';
 
 const App = () => {
   return <Providers />;
-  // return (
-  //   <View style={styles.container}>
-  //     <Text> Login Screen </Text>
-  //   </View>
-  // );
 };
 
 export default App;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });

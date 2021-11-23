@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import React from "react";
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import {windowHeight, windowWidth} from '../utils/Dimentions'
+import {windowHeight, windowWidth} from '../utils/Dimentions';
 
 const FormButton = ({buttonTitle, ...rest}) => {
     return (
-        <TouchableOpacity style={StyleSheet.buttonContainer} {...rest}>
-            <Text style={StyleSheet.buttonText}>{buttonTitle}</Text>
+        <TouchableOpacity style={styles.buttonContainer} {...rest}>
+            <Text style={styles.buttonText}>{buttonTitle}</Text>
         </TouchableOpacity>
     );
 };

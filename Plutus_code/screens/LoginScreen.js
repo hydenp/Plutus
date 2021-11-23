@@ -1,14 +1,18 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SignupScreen from './SignupScreen';
+import { AuthContext } from '../navigation/AuthProvider';
 
 const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-    return(
+
+    const {login} = useContext(AuthContext);
+
+    return (
         <View style={styles.container}>
             <Text style={styles.text}>Plutus</Text>
             <FormInput
@@ -27,9 +31,9 @@ const LoginScreen = ({navigation}) => {
             />
             <FormButton
                 buttonTitle="Sign In"
-                onPress={() => alert("Pressed")}
+                onPress={() => login(email, password)}
             />
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={styles.forgotButton}
                 onPress={() => navigation.navigate('Signup')}>
                 <Text style={styles.navButtonText}>
@@ -47,7 +51,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       padding: 20,
-      paddingTop: 50
+      paddingTop: 50,
     },
     logo: {
       height: 150,
