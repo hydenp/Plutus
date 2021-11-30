@@ -9,6 +9,8 @@ import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
 
 import PositionCard from '../components/PositionCard';
+import HoldingCard from '../components/HoldingCard';
+import { block } from 'react-native-reanimated';
 
 const HomeScreen = ({navigation}) => {
   const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
@@ -18,7 +20,7 @@ const HomeScreen = ({navigation}) => {
   const [avgPrice, setAvgPrice] = useState(null);
   const [tag, setTag] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [post, setPost] = useState(null);
+  const [holdingList, setHoldingList] = useState([]);
 
   const modalizeRef = useRef(null);
 
@@ -71,11 +73,11 @@ const HomeScreen = ({navigation}) => {
              });
           });
         });
-        setPost(list);
+        setHoldingList(list);
         if (loading){
           setLoading(false);
         }
-        console.log('Assets: ', list);
+        console.log('Assets: ', holdingList);
       } catch (e) {
         console.log('Fetch error is: ', e);
       }
@@ -86,9 +88,12 @@ const HomeScreen = ({navigation}) => {
   return (
       <View style={styles.container}>
           <Text> Home Screen </Text>
+          {/* <PositionCard holdings={holdingList}/> */}
+          {/* {console.log('TEST: ' + holdingList.map(block => PositionCard(block)))} */}
+          {holdingList.map((holdingList, key) => <HoldingCard key={key} ticker={holdingList.ticker} numShares={holdingList.numShare}/>)}
           <FormButton buttonTitle="Add Position" onPress={() => modalizeRef.current?.open()} />
 
-          <Modalize ref={modalizeRef} snapPoint={25}>
+          <Modalize ref={modalizeRef} snapPoint={250}>
             <View style={styles.container}>
               <Text style={styles.titleText}> Add Position </Text>
               <FormInput

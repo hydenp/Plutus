@@ -1,22 +1,18 @@
 import React from 'react';
 
 import {StyleSheet, View, Text, SafeAreaView, Flatlist} from 'react-native';
+import { block } from 'react-native-reanimated';
 import HoldingCard from './HoldingCard';
 
-const PositionCard = ({holdings}) => {
-  console.log(holdings);
-
-  // const renderItem = () => {
-  //   <HoldingCard />;
-  // };
-
+const PositionCard = ({holdings, ticker}) => {
+  // console.log('PositionCard Holdings: ' + holdings[0].ticker);
+  
   return (
     <SafeAreaView style={{...styles.container, ...styles.shadow}}>
       <View style={styles.container}>
-        <Text>Card Title</Text>
-        <HoldingCard holding={holdings[0]} />
-        <HoldingCard holding={holdings[1]} />
-        {/* <Flatlist data={holdings} renderItem={renderItem} /> */}
+        <Text>Card Title {ticker}</Text>
+        {/* <HoldingCard holding={holdings} />
+        <HoldingCard holding={holdings} /> */}
       </View>
     </SafeAreaView>
   );

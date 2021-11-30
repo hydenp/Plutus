@@ -2,11 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import TickerInfo from '../utils/TickerInfo';
 
-const HoldingCard = ({holding}) => {
+const HoldingCard = ({holding, ticker, numShares}) => {
   const [price, setPrice] = useState('-.--');
 
   async function updatePrice() {
-    var x = new TickerInfo(holding.symbol);
+    var x = new TickerInfo(ticker);
     await x.do();
     setPrice(x.data.c);
   }
@@ -17,8 +17,8 @@ const HoldingCard = ({holding}) => {
 
   return (
     <View style={styles.container}>
-      <Text>{holding.symbol}</Text>
-      <Text>{holding.shares}</Text>
+      <Text>{ticker}</Text>
+      <Text>{numShares}</Text>
       <Text>${price}</Text>
     </View>
   );
