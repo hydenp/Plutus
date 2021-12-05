@@ -2,23 +2,27 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import TickerInfo from '../utils/TickerInfo';
 
-const HoldingCard = ({holding, ticker, numShares}) => {
-  const [price, setPrice] = useState('-.--');
+const HoldingCard = prop => {
+  // const [price, setPrice] = useState(prop.data.currPrice);
+  const [price, setPrice] = useState(0);
 
-  async function updatePrice() {
-    var x = new TickerInfo(ticker);
-    await x.do();
-    setPrice(x.data.c);
-  }
+  // console.log(prop);
 
+  // async function updatePrice() {
+  //   var x = new TickerInfo(ticker);
+  //   await x.do();
+  //   setPrice(x.data.c);
+  // }
+  //
   useEffect(() => {
-    updatePrice();
+    console.log('hi hyden');
+    console.log(prop);
   });
 
   return (
     <View style={styles.container}>
-      <Text>{ticker}</Text>
-      <Text>{numShares}</Text>
+      <Text>{prop.data.ticker}</Text>
+      <Text>{prop.data.numShare}</Text>
       <Text>${price}</Text>
     </View>
   );
@@ -33,7 +37,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '95%',
+    width: '100%',
     height: 50,
     color: 'white',
     backgroundColor: 'grey',

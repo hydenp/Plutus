@@ -53,35 +53,38 @@ const HomeScreen = ({navigation}) => {
     });
   };
 
-  useEffect(() => {
-    const fetchData = async() => {
-      try {
-        const list = [];
-        await firestore()
+  const fetchData = async() => {
+    try {
+      const list = [];
+      await firestore()
         .collection('assets')
         .where('userId', '==', user.uid)
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach(doc => {
-            const {ticker, numShare, avgPrice, tag, userId} = doc.data();
+            const {ticker, numShare, avgPrice, currPrice, tag, userId} = doc.data();
             list.push({
               ticker: ticker,
               numShare: numShare,
               avgPrice: avgPrice,
+              currPrice: null,
               tag: tag,
               userId: userId,
-             });
+            });
           });
         });
-        setHoldingList(list);
-        if (loading){
-          setLoading(false);
-        }
-        console.log('Assets: ', holdingList);
-      } catch (e) {
-        console.log('Fetch error is: ', e);
+      console.log("List = " + list)
+      setHoldingList(list);
+      if (loading){
+        setLoading(false);
       }
-    };
+      console.log('Assets: ', holdingList);
+    } catch (e) {
+      console.log('Fetch error is: ', e);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -90,7 +93,12 @@ const HomeScreen = ({navigation}) => {
           <Text> Home Screen </Text>
           {/* <PositionCard holdings={holdingList}/> */}
           {/* {console.log('TEST: ' + holdingList.map(block => PositionCard(block)))} */}
-          {holdingList.map((holdingList, key) => <HoldingCard key={key} ticker={holdingList.ticker} numShares={holdingList.numShare}/>)}
+
+
+          {/*{holdingList.map((holdingList, key) => <HoldingCard key={key} ticker={holdingList.ticker} numShares={holdingList.numShare}/>)}*/}
+          <PositionCard holdingList={holdingList}/>
+
+
           <FormButton buttonTitle="Add Position" onPress={() => modalizeRef.current?.open()} />
 
           <Modalize ref={modalizeRef} snapPoint={250}>
