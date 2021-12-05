@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {useState, useEffect} from 'react';
 
-import {StyleSheet, View, Text, SafeAreaView, Flatlist} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, FlatList} from 'react-native';
 // import { block } from 'react-native-reanimated';
 import HoldingCard from './HoldingCard';
 import TickerInfo from '../utils/TickerInfo';
@@ -12,9 +12,9 @@ import TickerInfo from '../utils/TickerInfo';
 //
 //   useEffect(() => {
 //     console.log('HI hyden');
-//     console.log(holdings);
-//     const test = ['test', 'hyden', 'hello'];
-//     setHoldings(test);
+//     console.log(holdingList);
+//     // const test = ['test', 'hyden', 'hello'];
+//     // setHoldings(test);
 //   }, [holdings]);
 //
 //   return (
@@ -49,14 +49,15 @@ class PositionCard extends Component {
   state = {
     position: 0,
     data: null,
-    holdings: ['hello', 'world'],
+    // holdings: [{id: 1, ticker: 'AAPL'}],
+    holdings: null,
   };
 
   constructor(props) {
     super();
-    this.state = {
-      holdings: props.holdingList,
-    };
+    // this.state = {
+    //   holdings: props.holdingList,
+    // };
     // console.log(this.state);
 
     // this.printHoldings = this.printHoldings.bind(this);
@@ -64,31 +65,43 @@ class PositionCard extends Component {
     // this.componentDidUpdate = this.componentDidUpdate.bind(this);
   }
 
+
   updatePrices = () => {
     console.log('trynna update prices');
     console.log(this.state.holdings);
     for (const key in this.state.holdings) {
       console.log('key = ' + key);
       console.log('getting price');
+      console.log("ticker = " + this.state.holdings[key].ticker);
       TickerInfo.getData(this.state.holdings[key].ticker).then(res => {
+        console.log(res.data);
         this.state.holdings[key].currPrice = res.data.c;
+        this.setState();
+
+        // let items = [...this.state.items];
+        // let item = {...items[key]};
+        // item.currPrice = res.data.c;
+        // items[key] = item;
+        // this.setState({holdings: items});
       });
     }
   };
 
   componentDidUpdate = props => {
-    if (this.state.holdings.length !== props.holdingList.length) {
-      // console.log('currenstate');
-      // console.log(this.state);
-      console.log('updating holdings');
-      // console.log(props.holdingList);
-      this.state.holdings = props.holdingList;
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState();
-      // this.setState({holdings: props.holdingList});
-      console.log(this.state.holdings);
-      this.updatePrices();
+    console.log("hello from update");
+    console.log(props);
+    if (this.state.holdings !== null) {
+      if (this.state.holdings.length !== props.holdingList.length) {
+        this.setState({
+          holdings: props.holdingList,
+        });
+      }
+    } else {
+      this.setState({
+        holdings: props.holdingList,
+      });
     }
+    this.updatePrices();
   };
 
   printHoldings() {
@@ -98,16 +111,19 @@ class PositionCard extends Component {
     }
   }
 
+  renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
+
   render() {
     return (
       <View style={[styles.container, styles.shadow]}>
         <Text>Hi Hyden</Text>
 
-        {this.state.holdings.map(function (d, idx) {
-          return <HoldingCard key={idx} data={d} />;
-          // return <Text key={idx}> Hi Hyden</Text>;
-          // return <Text> Hi Hyden </Text>;
-        })}
+        {/*Render the list of Holdings*/}
+        <FlatList
+          data={this.state.holdings}
+          renderItem={this.renderItem}
+          keyExtractor={item => item.id}
+        />
       </View>
     );
   }

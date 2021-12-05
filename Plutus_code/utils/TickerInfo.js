@@ -8,7 +8,7 @@ class TickerInfo {
   //   this.url = `https://finnhub.io/api/v1/quote?symbol=${this.symbol}&token=${this.api_key}`;
   // }
 
-  static getData(symbol) {
+  static async getData(symbol) {
     let api_key = 'c6m340aad3i9dkni4430';
     return axios({
       method: 'get',

@@ -6,7 +6,9 @@ const HoldingCard = prop => {
   // const [price, setPrice] = useState(prop.data.currPrice);
   const [price, setPrice] = useState(0);
 
-  // console.log(prop);
+
+  console.log("From holding card, here is the props");
+  console.log(prop);
 
   // async function updatePrice() {
   //   var x = new TickerInfo(ticker);
@@ -15,8 +17,10 @@ const HoldingCard = prop => {
   // }
   //
   useEffect(() => {
-    console.log('hi hyden');
+    console.log("*****************************************");
+    console.log('new prop?');
     console.log(prop);
+    console.log("HI HYDEN");
   });
 
   return (
@@ -24,6 +28,7 @@ const HoldingCard = prop => {
       <Text>{prop.data.ticker}</Text>
       <Text>{prop.data.numShare}</Text>
       <Text>${price}</Text>
+      {/*<Text>Price</Text>*/}
     </View>
   );
 };
@@ -37,10 +42,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '100%',
+    width: '80%',
     height: 50,
-    color: 'white',
+    // color: 'white',
     backgroundColor: 'grey',
-    borderRadius: 5,
+    borderRadius: 8,
   },
 });

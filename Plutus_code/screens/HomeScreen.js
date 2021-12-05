@@ -64,6 +64,7 @@ const HomeScreen = ({navigation}) => {
           querySnapshot.forEach(doc => {
             const {ticker, numShare, avgPrice, currPrice, tag, userId} = doc.data();
             list.push({
+              id: (avgPrice * 100) % 17,
               ticker: ticker,
               numShare: numShare,
               avgPrice: avgPrice,
