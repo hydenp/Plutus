@@ -1,12 +1,10 @@
 import React from 'react';
 
 import {StyleSheet, View, Text, SafeAreaView, Flatlist} from 'react-native';
-import { block } from 'react-native-reanimated';
 import HoldingCard from './HoldingCard';
 
 const PositionCard = ({holdings, ticker}) => {
-  // console.log('PositionCard Holdings: ' + holdings[0].ticker);
-  
+  // console.log('PositionCard Holdings: ' + holdings[0].ticker); 
   return (
     <SafeAreaView style={{...styles.container, ...styles.shadow}}>
       <View style={styles.container}>
