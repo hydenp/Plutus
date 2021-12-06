@@ -5,51 +5,12 @@ import {StyleSheet, View, Text, SafeAreaView, FlatList} from 'react-native';
 // import { block } from 'react-native-reanimated';
 import HoldingCard from './HoldingCard';
 import TickerInfo from '../utils/TickerInfo';
-
-// const PositionCard = ({holdingList}) => {
-//   const [holdings, setHoldings] = useState(holdingList);
-//   // console.log(holdingList);
-//
-//   useEffect(() => {
-//     console.log('HI hyden');
-//     console.log(holdingList);
-//     // const test = ['test', 'hyden', 'hello'];
-//     // setHoldings(test);
-//   }, [holdings]);
-//
-//   return (
-//     //   {holdings.map((holding, key) => (
-//     //     <HoldingCard
-//     //       key={key}
-//     //       ticker={holding.ticker}
-//     //       numShares={holding.numShare}
-//     //     />
-//     //   ))}
-//     //   ;
-//       <View style={[styles.container, styles.shadow]}>
-//         <Text>Hi Hyden</Text>
-//
-//         {/*{this.state.holdings.map(function (d, idx) {*/}
-//         {/*  // return <HoldingCard key={idx} data={d} />;*/}
-//         {/*  // return <Text key={idx}> Hi Hyden</Text>;*/}
-//         {/*  return <Text> Hi Hyden </Text>;*/}
-//         {/*})}*/}
-//       </View>
-//   );
-//   // <SafeAreaView style={{...styles.container, ...styles.shadow}}>
-//   //   <View style={styles.container}>
-//   //     <Text>Card Title {ticker}</Text>
-//   //     {/* <HoldingCard holding={holdings} />
-//   //     <HoldingCard holding={holdings} /> */}
-//   //   </View>
-//   // </SafeAreaView>
-// };
+import formatter from '../utils/NumberFormatter';
 
 class PositionCard extends Component {
   state = {
     position: 0,
     data: null,
-    // holdings: [{id: 1, ticker: 'AAPL'}],
     holdings: null,
   };
 
@@ -69,24 +30,17 @@ class PositionCard extends Component {
       }
     }
     this.setState({
-      position: Math.round(sum * 100) / 100,
+      position: sum,
     });
-    console.log('position = ');
-    console.log(this.state.position);
   };
 
   updatePrices = () => {
-    console.log('trynna update prices');
-    console.log(this.state.holdings);
+    // console.log('trynna update prices');
+    // console.log(this.state.holdings);
     for (const key in this.state.holdings) {
-      // console.log('key = ' + key);
-      // console.log('getting price');
       // console.log("ticker = " + this.state.holdings[key].ticker);
       TickerInfo.getData(this.state.holdings[key].ticker)
         .then(res => {
-          // console.log(res.data);
-          // this.state.holdings[key].currPrice = res.data.c;
-          // this.setState();
           console.log(this.state);
           let items = [...this.state.holdings];
           let item = {...items[key]};
@@ -101,8 +55,7 @@ class PositionCard extends Component {
   };
 
   componentDidUpdate = props => {
-    console.log("hello from update");
-    // console.log(props);
+    console.log('hello from update');
     if (this.state.holdings !== null) {
       if (this.state.holdings.length !== props.holdingList.length) {
         this.setState(
@@ -122,7 +75,6 @@ class PositionCard extends Component {
         },
         () => {
           this.updatePrices();
-          // this.updatePosition();
         },
       );
     }
@@ -137,20 +89,25 @@ class PositionCard extends Component {
     setTimeout(this.yourFunction, 5000);
   };
 
-  printHoldings() {
-    for (const key in this.state.holdings) {
-      // console.log('key = ' + key);
-      console.log(this.state.holdings[key]);
-    }
-  }
+  // printHoldings() {
+  //   for (const key in this.state.holdings) {
+  //     // console.log('key = ' + key);
+  //     console.log(this.state.holdings[key]);
+  //   }
+  // }
 
   renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
 
   render() {
     return (
-      <View style={[styles.container, styles.shadow]}>
-        <Text>Hi Hyden</Text>
-        <Text>${this.state.position}</Text>
+      <View style={styles.container}>
+
+        <View style={styles.position}>
+          <Text style={styles.positionFont}>Hi Hyden  </Text>
+          <Text style={styles.positionFont}>
+            {formatter.format(this.state.position)}
+          </Text>
+        </View>
 
         {/*Render the list of Holdings*/}
         <FlatList
@@ -168,16 +125,33 @@ export default PositionCard;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     width: '100%',
-    height: 'auto',
+    height: '80%',
     color: 'white',
     borderRadius: 5,
     dropShadow: 5,
   },
-  shadow: {
-    borderWidth: 1,
-    borderColor: 'black',
+  position: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
   },
+  positionFont: {
+    fontWeight: 'bold',
+    fontSize: 25,
+  },
+  // list: {
+  //   borderColor: 'black',
+  //   borderWidth: 2,
+  //   // padding: 10,
+  //   // margin: 5,
+  //   flex: 1,
+  //   // alignItems: 'center',
+  //   justifyContent: 'center',
+  //   width: '100%',
+  //   height: 'auto',
+  //   color: 'white',
+  // },
 });

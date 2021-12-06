@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useContext, useRef, useEffect} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView } from "react-native";
 import { Modalize } from 'react-native-modalize';
 import firestore, { firebase } from '@react-native-firebase/firestore';
 
@@ -92,15 +92,17 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   return (
+    <SafeAreaView>
       <View style={styles.container}>
-          <Text> Home Screen </Text>
+          {/*<Text> Home Screen </Text>*/}
           {/* <PositionCard holdings={holdingList}/> */}
           {/* {console.log('TEST: ' + holdingList.map(block => PositionCard(block)))} */}
 
 
           {/*{holdingList.map((holdingList, key) => <HoldingCard key={key} ticker={holdingList.ticker} numShares={holdingList.numShare}/>)}*/}
-          <PositionCard holdingList={holdingList}/>
-
+          <View style={styles.boxWithShadow}>
+            <PositionCard  holdingList={holdingList}/>
+          </View>
 
           <FormButton buttonTitle="Add Position" onPress={() => modalizeRef.current?.open()} />
 
@@ -139,6 +141,7 @@ const HomeScreen = ({navigation}) => {
 
           <FormButton buttonTitle="Logout" onPress={() => logout()} />
       </View>
+    </SafeAreaView>
   );
 };
 
@@ -155,4 +158,11 @@ const styles = StyleSheet.create({
       paddingBottom: 20,
       fontSize: 25,
     },
-  });
+    // boxWithShadow: {
+    //   shadowColor: '#000',
+    //   shadowOffset: { width: 0, height: 1 },
+    //   shadowOpacity: 0.8,
+    //   shadowRadius: 2,
+    //   elevation: 5,
+    // },
+});

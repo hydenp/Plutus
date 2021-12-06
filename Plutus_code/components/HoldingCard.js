@@ -1,34 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import TickerInfo from '../utils/TickerInfo';
+import formatter from '../utils/NumberFormatter';
 
 const HoldingCard = prop => {
-  // const [price, setPrice] = useState(prop.data.currPrice);
   const [price, setPrice] = useState(prop.currPrice);
 
 
   console.log("From holding card, here is the props");
   console.log(prop);
 
-  // async function updatePrice() {
-  //   var x = new TickerInfo(ticker);
-  //   await x.do();
-  //   setPrice(x.data.c);
-  // }
-  //
   useEffect(() => {
-    console.log("*****************************************");
-    console.log('new prop?');
-    console.log(prop);
     setPrice(prop.data.currPrice);
   }, [prop, prop.currPrice]);
 
   return (
     <View style={styles.container}>
-      <Text>{prop.data.ticker}</Text>
-      <Text>{prop.data.numShare}</Text>
-      <Text>${price}</Text>
-      {/*<Text>Price</Text>*/}
+      <Text style={styles.holdingFont}>{prop.data.ticker}</Text>
+      <Text style={styles.holdingFont}>{prop.data.numShare}</Text>
+      <Text style={styles.holdingFont}>{formatter.format(price)}</Text>
     </View>
   );
 };
@@ -38,14 +27,17 @@ export default HoldingCard;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    margin: 5,
+    margin: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '80%',
+    width: '90%',
     height: 50,
-    // color: 'white',
-    backgroundColor: 'grey',
+    backgroundColor: '#C4C4C4',
     borderRadius: 8,
+  },
+  holdingFont: {
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 });
