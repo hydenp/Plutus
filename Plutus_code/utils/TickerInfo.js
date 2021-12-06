@@ -1,23 +1,24 @@
 import axios from 'axios';
 
 class TickerInfo {
-  constructor(symbol) {
-    this.symbol = symbol;
-    this.data = null;
-    this.api_key = 'c6dj5gaad3ibd9kajrlg';
-    this.url = `https://finnhub.io/api/v1/quote?symbol=${this.symbol}&token=${this.api_key}`;
-  }
+  // constructor(symbol) {
+  //   this.symbol = symbol;
+  //   this.data = null;
+  //   this.api_key = 'c6dj5gaad3ibd9kajrlg';
+  //   this.url = `https://finnhub.io/api/v1/quote?symbol=${this.symbol}&token=${this.api_key}`;
+  // }
 
-  getData() {
+  static async getData(symbol) {
+    let api_key = 'c6m340aad3i9dkni4430';
     return axios({
       method: 'get',
-      url: this.url,
+      url: `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${api_key}`,
     });
   }
 
-  async do() {
-    const res = await this.getData();
-    this.data = res.data;
+  static async do(symbol) {
+    const res = await this.getData(symbol);
+    return res.data;
   }
 }
 

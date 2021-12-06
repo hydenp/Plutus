@@ -1,36 +1,158 @@
-import React from 'react';
+import React, {Component} from 'react';
+import {useState, useEffect} from 'react';
+import {StyleSheet, View, Text, SafeAreaView, FlatList} from 'react-native';
 
-import {StyleSheet, View, Text, SafeAreaView, Flatlist} from 'react-native';
+
 import HoldingCard from './HoldingCard';
+import TickerInfo from '../utils/TickerInfo';
+import formatter from '../utils/NumberFormatter';
 
-const PositionCard = ({holdings, ticker}) => {
-  // console.log('PositionCard Holdings: ' + holdings[0].ticker); 
-  return (
-    <SafeAreaView style={{...styles.container, ...styles.shadow}}>
+
+class PositionCard extends Component {
+  state = {
+    position: 0,
+    data: null,
+    holdings: null,
+  };
+
+  constructor() {
+    super();
+    // this.yourFunction();
+  }
+
+  updatePosition = () => {
+    let sum = 0;
+    for (const key in this.state.holdings) {
+      if (typeof this.state.holdings[key].currPrice === 'number') {
+        sum +=
+          this.state.holdings[key].currPrice *
+          // eslint-disable-next-line radix
+          parseInt(this.state.holdings[key].numShare);
+      }
+    }
+    this.setState({
+      position: sum,
+    });
+  };
+
+  updatePrices = () => {
+    // console.log('trynna update prices');
+    // console.log(this.state.holdings);
+    for (const key in this.state.holdings) {
+      // console.log("ticker = " + this.state.holdings[key].ticker);
+      TickerInfo.getData(this.state.holdings[key].ticker)
+        .then(res => {
+          console.log(this.state);
+          let items = [...this.state.holdings];
+          let item = {...items[key]};
+          item.currPrice = res.data.c;
+          items[key] = item;
+          this.setState({holdings: items}, () => this.updatePosition());
+        })
+        .catch(error => {
+          console.log('price call failed with: ' + error);
+        });
+    }
+  };
+
+  componentDidUpdate = props => {
+    console.log('hello from update');
+    if (this.state.holdings !== null) {
+      if (this.state.holdings.length !== props.holdingList.length) {
+        this.setState(
+          {
+            holdings: props.holdingList,
+          },
+          () => {
+            this.updatePrices();
+            // this.updatePosition();
+          },
+        );
+      }
+    } else {
+      this.setState(
+        {
+          holdings: props.holdingList,
+        },
+        () => {
+          this.updatePrices();
+        },
+      );
+    }
+  };
+
+  yourFunction = () => {
+    // do whatever you like here
+
+    console.log("hello!");
+    this.updatePrices();
+
+    setTimeout(this.yourFunction, 5000);
+  };
+
+  // printHoldings() {
+  //   for (const key in this.state.holdings) {
+  //     // console.log('key = ' + key);
+  //     console.log(this.state.holdings[key]);
+  //   }
+  // }
+
+  renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
+
+  render() {
+    return (
       <View style={styles.container}>
-        <Text>Card Title {ticker}</Text>
-        {/* <HoldingCard holding={holdings} />
-        <HoldingCard holding={holdings} /> */}
+
+        <View style={styles.position}>
+          <Text style={styles.positionFont}>Hi Hyden  </Text>
+          <Text style={styles.positionFont}>
+            {formatter.format(this.state.position)}
+          </Text>
+        </View>
+
+        {/*Render the list of Holdings*/}
+        <FlatList
+          data={this.state.holdings}
+          renderItem={this.renderItem}
+          keyExtractor={item => item.id}
+        />
       </View>
-    </SafeAreaView>
-  );
-};
+    );
+  }
+}
 
 export default PositionCard;
 
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     width: '100%',
-    height: 'auto',
+    height: '80%',
     color: 'white',
     borderRadius: 5,
     dropShadow: 5,
   },
-  shadow: {
-    borderWidth: 1,
-    borderColor: 'black',
+  position: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
   },
+  positionFont: {
+    fontWeight: 'bold',
+    fontSize: 25,
+  },
+  // list: {
+  //   borderColor: 'black',
+  //   borderWidth: 2,
+  //   // padding: 10,
+  //   // margin: 5,
+  //   flex: 1,
+  //   // alignItems: 'center',
+  //   justifyContent: 'center',
+  //   width: '100%',
+  //   height: 'auto',
+  //   color: 'white',
+  // },
 });

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useContext, useRef, useEffect} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView } from "react-native";
 import { Modalize } from 'react-native-modalize';
 import firestore, { firebase, query, where, collection } from '@react-native-firebase/firestore';
 import uuid from 'uuid/v4';
@@ -113,21 +113,25 @@ const HomeScreen = ({navigation}) => {
     });
   };
 
-  useEffect(() => {
-    const fetchData = async() => {
-      try {
-        const list = [];
-        await firestore()
+  const fetchData = async() => {
+    try {
+      const list = [];
+      await firestore()
         .collection('assets')
         .where('userId', '==', user.uid)
         .get()
         .then((querySnapshot) => {
+
           querySnapshot.forEach(doc => {
+            const key = Math.round(Math.random() * 100000000000);
             const {ticker, numShare, avgPrice, tag, userId, uniqueID, assetType, assetFirebaseID} = doc.data();
+
             list.push({
+              id: key,
               ticker: ticker,
               numShare: numShare,
               avgPrice: avgPrice,
+              currPrice: '--.--',
               tag: tag,
               userId: userId,
               uniqueID: uniqueID,
@@ -136,23 +140,36 @@ const HomeScreen = ({navigation}) => {
              });
           });
         });
-        setHoldingList(list);
-        if (loading){
-          setLoading(false);
-        }
-        console.log('Assets: ', holdingList);
-      } catch (e) {
-        console.log('Fetch error is: ', e);
+      console.log("List = " + list)
+      setHoldingList(list);
+      if (loading){
+        setLoading(false);
       }
-    };
+      console.log('Assets: ', list);
+    } catch (e) {
+      console.log('Fetch error is: ', e);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
   return (
+    <SafeAreaView>
       <View style={styles.container}>
-          <Text> Home Screen </Text>
-          {holdingList.map((holdingList) => <HoldingCard key={holdingList.uniqueID} ticker={holdingList.ticker} numShares={holdingList.numShare} assetType={holdingList.assetType}/>)}
-          <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
+          {/*<Text> Home Screen </Text>*/}
+          {/* <PositionCard holdings={holdingList}/> */}
+          {/* {console.log('TEST: ' + holdingList.map(block => PositionCard(block)))} */}
+
+
+          {/*{holdingList.map((holdingList, key) => <HoldingCard key={key} ticker={holdingList.ticker} numShares={holdingList.numShare}/>)}*/}
+          <View style={styles.boxWithShadow}>
+            <PositionCard  holdingList={holdingList}/>
+          </View>
+
+          <FormButton buttonTitle="Add Position" onPress={() => modalizeRef.current?.open()} />
+
 
           <Modalize ref={Singleton.getInstance(false)} snapPoint={400}>
             <View style={styles.container}>
@@ -195,6 +212,7 @@ const HomeScreen = ({navigation}) => {
 
           <FormButton buttonTitle="Logout" onPress={() => logout()} />
       </View>
+    </SafeAreaView>
   );
 };
 
@@ -211,4 +229,11 @@ const styles = StyleSheet.create({
       paddingBottom: 20,
       fontSize: 25,
     },
-  });
+    // boxWithShadow: {
+    //   shadowColor: '#000',
+    //   shadowOffset: { width: 0, height: 1 },
+    //   shadowOpacity: 0.8,
+    //   shadowRadius: 2,
+    //   elevation: 5,
+    // },
+});
