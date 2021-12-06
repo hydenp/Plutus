@@ -61,14 +61,16 @@ const HomeScreen = ({navigation}) => {
         .where('userId', '==', user.uid)
         .get()
         .then((querySnapshot) => {
+
           querySnapshot.forEach(doc => {
+            const key = Math.round(Math.random() * 100000000000);
             const {ticker, numShare, avgPrice, currPrice, tag, userId} = doc.data();
             list.push({
-              id: (avgPrice * 100) % 17,
+              id: key,
               ticker: ticker,
               numShare: numShare,
               avgPrice: avgPrice,
-              currPrice: null,
+              currPrice: '--.--',
               tag: tag,
               userId: userId,
             });
@@ -79,7 +81,7 @@ const HomeScreen = ({navigation}) => {
       if (loading){
         setLoading(false);
       }
-      console.log('Assets: ', holdingList);
+      console.log('Assets: ', list);
     } catch (e) {
       console.log('Fetch error is: ', e);
     }

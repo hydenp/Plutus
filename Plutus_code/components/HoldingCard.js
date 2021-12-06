@@ -4,7 +4,7 @@ import TickerInfo from '../utils/TickerInfo';
 
 const HoldingCard = prop => {
   // const [price, setPrice] = useState(prop.data.currPrice);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(prop.currPrice);
 
 
   console.log("From holding card, here is the props");
@@ -20,8 +20,8 @@ const HoldingCard = prop => {
     console.log("*****************************************");
     console.log('new prop?');
     console.log(prop);
-    console.log("HI HYDEN");
-  });
+    setPrice(prop.data.currPrice);
+  }, [prop, prop.currPrice]);
 
   return (
     <View style={styles.container}>

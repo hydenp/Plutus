@@ -53,55 +53,88 @@ class PositionCard extends Component {
     holdings: null,
   };
 
-  constructor(props) {
+  constructor() {
     super();
-    // this.state = {
-    //   holdings: props.holdingList,
-    // };
-    // console.log(this.state);
-
-    // this.printHoldings = this.printHoldings.bind(this);
-    // this.updatePrices = this.updatePrices.bind(this);
-    // this.componentDidUpdate = this.componentDidUpdate.bind(this);
+    // this.yourFunction();
   }
 
+  updatePosition = () => {
+    let sum = 0;
+    for (const key in this.state.holdings) {
+      if (typeof this.state.holdings[key].currPrice === 'number') {
+        sum +=
+          this.state.holdings[key].currPrice *
+          // eslint-disable-next-line radix
+          parseInt(this.state.holdings[key].numShare);
+      }
+    }
+    this.setState({
+      position: Math.round(sum * 100) / 100,
+    });
+    console.log('position = ');
+    console.log(this.state.position);
+  };
 
   updatePrices = () => {
     console.log('trynna update prices');
     console.log(this.state.holdings);
     for (const key in this.state.holdings) {
-      console.log('key = ' + key);
-      console.log('getting price');
-      console.log("ticker = " + this.state.holdings[key].ticker);
-      TickerInfo.getData(this.state.holdings[key].ticker).then(res => {
-        console.log(res.data);
-        this.state.holdings[key].currPrice = res.data.c;
-        this.setState();
-
-        // let items = [...this.state.items];
-        // let item = {...items[key]};
-        // item.currPrice = res.data.c;
-        // items[key] = item;
-        // this.setState({holdings: items});
-      });
+      // console.log('key = ' + key);
+      // console.log('getting price');
+      // console.log("ticker = " + this.state.holdings[key].ticker);
+      TickerInfo.getData(this.state.holdings[key].ticker)
+        .then(res => {
+          // console.log(res.data);
+          // this.state.holdings[key].currPrice = res.data.c;
+          // this.setState();
+          console.log(this.state);
+          let items = [...this.state.holdings];
+          let item = {...items[key]};
+          item.currPrice = res.data.c;
+          items[key] = item;
+          this.setState({holdings: items}, () => this.updatePosition());
+        })
+        .catch(error => {
+          console.log('price call failed with: ' + error);
+        });
     }
   };
 
   componentDidUpdate = props => {
     console.log("hello from update");
-    console.log(props);
+    // console.log(props);
     if (this.state.holdings !== null) {
       if (this.state.holdings.length !== props.holdingList.length) {
-        this.setState({
-          holdings: props.holdingList,
-        });
+        this.setState(
+          {
+            holdings: props.holdingList,
+          },
+          () => {
+            this.updatePrices();
+            // this.updatePosition();
+          },
+        );
       }
     } else {
-      this.setState({
-        holdings: props.holdingList,
-      });
+      this.setState(
+        {
+          holdings: props.holdingList,
+        },
+        () => {
+          this.updatePrices();
+          // this.updatePosition();
+        },
+      );
     }
+  };
+
+  yourFunction = () => {
+    // do whatever you like here
+
+    console.log("hello!");
     this.updatePrices();
+
+    setTimeout(this.yourFunction, 5000);
   };
 
   printHoldings() {
@@ -117,6 +150,7 @@ class PositionCard extends Component {
     return (
       <View style={[styles.container, styles.shadow]}>
         <Text>Hi Hyden</Text>
+        <Text>${this.state.position}</Text>
 
         {/*Render the list of Holdings*/}
         <FlatList
