@@ -14,6 +14,7 @@ import HoldingCard from '../components/HoldingCard';
 import AssetDecorator from '../utils/AssetDecorator';
 import DropDown from '../components/DropDown';
 
+
 const HomeScreen = ({navigation}) => {
   const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
 
@@ -25,7 +26,27 @@ const HomeScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [holdingList, setHoldingList] = useState([]);
 
-  const modalizeRef = useRef(null);
+
+  var Singleton = (function () {
+    var modalizeRef;
+  
+    function createInstance() {
+        const modalizeRef = useRef(null);
+        return modalizeRef;
+    }
+  
+    return {
+        getInstance: function (open) {
+            if (!modalizeRef) {
+              modalizeRef = createInstance();
+            }
+            if(open == true){
+              modalizeRef.current?.open();
+            }
+            return modalizeRef;
+        }
+    };
+  })();
 
   const checker = () => {
     var assetAlreadyExist = false;
@@ -131,9 +152,9 @@ const HomeScreen = ({navigation}) => {
       <View style={styles.container}>
           <Text> Home Screen </Text>
           {holdingList.map((holdingList) => <HoldingCard key={holdingList.uniqueID} ticker={holdingList.ticker} numShares={holdingList.numShare} assetType={holdingList.assetType}/>)}
-          <FormButton buttonTitle="Add Position" onPress={() => modalizeRef.current?.open()} />
+          <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
 
-          <Modalize ref={modalizeRef} snapPoint={400}>
+          <Modalize ref={Singleton.getInstance(false)} snapPoint={400}>
             <View style={styles.container}>
               <Text style={styles.titleText}> Add a new position </Text>
               {/* <FormInput

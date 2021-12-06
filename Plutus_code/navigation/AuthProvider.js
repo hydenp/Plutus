@@ -18,6 +18,12 @@ export const AuthProvider = ({children}) => {
                         await auth().signInWithEmailAndPassword(email, password);
                     } catch (err) {
                         console.log(err);
+                        // console.log(password);
+                        if(email == undefined){
+                            alert('Please enter a valid email');
+                        }else{
+                            alert('Wrong password.');
+                        }
                     }
                 },
                 register: async (email, password) => {
@@ -25,6 +31,11 @@ export const AuthProvider = ({children}) => {
                         await auth().createUserWithEmailAndPassword(email, password);
                     } catch (err) {
                         console.log(err);
+                        if(email == undefined){
+                            alert('Please enter a valid email');
+                        }else{
+                            alert('Invalid password.');
+                        }
                     }
                 },
                 logout: async () => {
