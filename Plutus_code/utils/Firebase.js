@@ -36,8 +36,24 @@ class Firebase {
       });
   };
 
+  static fetchData(user) {
+    return firestore()
+      .collection('assets')
+      .where('userId', '==', user.uid)
+      .get();
+  };
 
-
+  static updateAsset(getAssetFirebaseID, holdingList, indexTemp) {
+    firestore()
+      .collection('assets')
+      .doc(getAssetFirebaseID)
+      .update({
+        numShare: holdingList[indexTemp].numShare,
+      })
+      .then(() => {
+        console.log('Asset updated correctly');
+      });
+  };
 
 }
 

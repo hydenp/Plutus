@@ -57,6 +57,7 @@ class PositionCard extends Component {
 
   componentDidUpdate = props => {
     console.log('hello from update');
+    console.log(props.holdingList);
     if (this.state.holdings !== null) {
       if (this.state.holdings.length !== props.holdingList.length) {
         this.setState(

@@ -67,15 +67,7 @@ const HomeScreen = ({navigation}) => {
       numSharesUpdate.decorateAsset();
 
       //update asset on Firebase
-      firestore()
-        .collection('assets')
-        .doc(getAssetFirebaseID)
-        .update({
-          numShare: holdingList[indexTemp].numShare,
-        })
-        .then(() => {
-          console.log('Asset updated correctly');
-        });
+      Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
         setTicker(null);
         setNumShares(null);
@@ -88,76 +80,39 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
-  // const addAssets = async () => {
-  //   firestore().collection('assets').add({
-  //     userId: user.uid,
-  //     ticker: ticker,
-  //     numShare: numShares,
-  //     avgPrice: avgPrice,
-  //     tag: tag,
-  //     uniqueID: uuid(),
-  //     assetType: assetType,
-  //   })
-  //   .then(function(docRef) {
-  //     console.log('Added Asset with id: ' + docRef.id);
-  //     Alert.alert( //delete later
-  //       'Asset published!',
-  //       'Your Asset has been published successfully!',
-  //     );
-  //     setTicker(null);
-  //     setNumShares(null);
-  //     setAvgPrice(null);
-  //     setTag(null);
-  //     setAssetType(null);
-  //   })
-  //   .catch((error) => {
-  //     console.log('Something went wrong with added post to firestore.', error);
-  //   });
-  // };
-
-
-
-  const fetchData = async() => {
-    try {
-      const list = [];
-      await firestore()
-        .collection('assets')
-        .where('userId', '==', user.uid)
-        .get()
-        .then((querySnapshot) => {
-
-          querySnapshot.forEach(doc => {
-            const key = Math.round(Math.random() * 100000000000);
-            const {ticker, numShare, avgPrice, tag, userId, uniqueID, assetType, assetFirebaseID} = doc.data();
-
-            list.push({
-              id: key,
-              ticker: ticker,
-              numShare: numShare,
-              avgPrice: avgPrice,
-              currPrice: '--.--',
-              tag: tag,
-              userId: userId,
-              uniqueID: uniqueID,
-              assetType: assetType,
-              assetFirebaseID: doc.id,
-             });
-          });
-        });
-      console.log("List = " + list)
-      setHoldingList(list);
-      if (loading){
-        setLoading(false);
-      }
-      console.log('Assets: ', list);
-    } catch (e) {
-      console.log('Fetch error is: ', e);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
-  }, []);
+    Firebase.fetchData(user).then(querySnapshot => {
+      const list = [];
+      querySnapshot.forEach(doc => {
+        const key = Math.round(Math.random() * 100000000000);
+        const {
+          ticker,
+          numShare,
+          avgPrice,
+          tag,
+          userId,
+          uniqueID,
+          assetType,
+          assetFirebaseID,
+        } = doc.data();
+
+        list.push({
+          id: key,
+          ticker: ticker,
+          numShare: numShare,
+          avgPrice: avgPrice,
+          currPrice: '--.--',
+          tag: tag,
+          userId: userId,
+          uniqueID: uniqueID,
+          assetType: assetType,
+          assetFirebaseID: doc.id,
+        });
+      });
+      setHoldingList(list);
+      setLoading(false);
+    });
+  }, [user]);
 
   return (
     <SafeAreaView>
@@ -168,11 +123,11 @@ const HomeScreen = ({navigation}) => {
 
 
           {/*{holdingList.map((holdingList, key) => <HoldingCard key={key} ticker={holdingList.ticker} numShares={holdingList.numShare}/>)}*/}
-          <View style={styles.boxWithShadow}>
+          {/*<View style={styles.boxWithShadow}>*/}
             <PositionCard  holdingList={holdingList}/>
-          </View>
+          {/*</View>*/}
 
-          <FormButton buttonTitle="Add Position" onPress={() => modalizeRef.current?.open()} />
+          <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
 
 
           <Modalize ref={Singleton.getInstance(false)} snapPoint={400}>
