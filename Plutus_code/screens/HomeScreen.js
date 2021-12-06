@@ -69,11 +69,20 @@ const HomeScreen = ({navigation}) => {
       //update asset on Firebase
       Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
-        setTicker(null);
-        setNumShares(null);
-        setAvgPrice(null);
-        setTag(null);
-        setAssetType(null);
+      //update screen
+      console.log('holdingListholdingList: ' + holdingList[indexTemp].numShare);
+      let items = [...holdingList];
+      let item = {...items[indexTemp]};
+      item.numShare += numShares;
+      items[indexTemp] = item;
+      console.log('holdingListholdingList2222: ' + items[indexTemp].numShare);
+      setHoldingList(items);
+
+      setTicker(null);
+      setNumShares(null);
+      setAvgPrice(null);
+      setTag(null);
+      setAssetType(null);
     }
     else {
       Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
