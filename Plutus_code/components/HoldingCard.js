@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
+
 import {StyleSheet, View, Text} from 'react-native';
 import formatter from '../utils/NumberFormatter';
 
 const HoldingCard = prop => {
   const [price, setPrice] = useState(prop.currPrice);
+
 
 
   console.log("From holding card, here is the props");

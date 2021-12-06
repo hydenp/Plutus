@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {useState, useEffect} from 'react';
-
 import {StyleSheet, View, Text, SafeAreaView, FlatList} from 'react-native';
-// import { block } from 'react-native-reanimated';
+
+
 import HoldingCard from './HoldingCard';
 import TickerInfo from '../utils/TickerInfo';
 import formatter from '../utils/NumberFormatter';
+
 
 class PositionCard extends Component {
   state = {
