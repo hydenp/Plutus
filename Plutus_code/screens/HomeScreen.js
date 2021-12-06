@@ -14,6 +14,8 @@ import HoldingCard from '../components/HoldingCard';
 import AssetDecorator from '../utils/AssetDecorator';
 import DropDown from '../components/DropDown';
 
+import Firebase from "../utils/Firebase";
+
 
 const HomeScreen = ({navigation}) => {
   const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
@@ -29,12 +31,12 @@ const HomeScreen = ({navigation}) => {
 
   var Singleton = (function () {
     var modalizeRef;
-  
+
     function createInstance() {
         const modalizeRef = useRef(null);
         return modalizeRef;
     }
-  
+
     return {
         getInstance: function (open) {
             if (!modalizeRef) {
@@ -82,36 +84,38 @@ const HomeScreen = ({navigation}) => {
         setAssetType(null);
     }
     else {
-      addAssets();
+      Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
     }
   };
 
-  const addAssets = async () => {
-    firestore().collection('assets').add({
-      userId: user.uid,
-      ticker: ticker,
-      numShare: numShares,
-      avgPrice: avgPrice,
-      tag: tag,
-      uniqueID: uuid(),
-      assetType: assetType,
-    })
-    .then(function(docRef) {
-      console.log('Added Asset with id: ' + docRef.id);
-      Alert.alert( //delete later
-        'Asset published!',
-        'Your Asset has been published successfully!',
-      );
-      setTicker(null);
-      setNumShares(null);
-      setAvgPrice(null);
-      setTag(null);
-      setAssetType(null);
-    })
-    .catch((error) => {
-      console.log('Something went wrong with added post to firestore.', error);
-    });
-  };
+  // const addAssets = async () => {
+  //   firestore().collection('assets').add({
+  //     userId: user.uid,
+  //     ticker: ticker,
+  //     numShare: numShares,
+  //     avgPrice: avgPrice,
+  //     tag: tag,
+  //     uniqueID: uuid(),
+  //     assetType: assetType,
+  //   })
+  //   .then(function(docRef) {
+  //     console.log('Added Asset with id: ' + docRef.id);
+  //     Alert.alert( //delete later
+  //       'Asset published!',
+  //       'Your Asset has been published successfully!',
+  //     );
+  //     setTicker(null);
+  //     setNumShares(null);
+  //     setAvgPrice(null);
+  //     setTag(null);
+  //     setAssetType(null);
+  //   })
+  //   .catch((error) => {
+  //     console.log('Something went wrong with added post to firestore.', error);
+  //   });
+  // };
+
+
 
   const fetchData = async() => {
     try {
