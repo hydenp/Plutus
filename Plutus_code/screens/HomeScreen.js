@@ -66,7 +66,6 @@ const HomeScreen = ({navigation}) => {
   };
 
   const addAssets = async () => {
-
     firestore().collection('assets').add({
       userId: user.uid,
       ticker: ticker,
