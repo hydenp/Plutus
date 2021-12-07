@@ -53,8 +53,36 @@ class Firebase {
       .then(() => {
         console.log('Asset updated correctly');
       });
-  };
+  }
 
+  static createObject(doc) {
+    const key = Math.round(Math.random() * 100000000000);
+    // parse the doc object data
+    const {
+      ticker,
+      numShare,
+      avgPrice,
+      tag,
+      userId,
+      uniqueID,
+      assetType,
+      assetFirebaseID,
+    } = doc.data();
+
+    // create the new object to add to the list
+    return {
+      id: key,
+      ticker: ticker,
+      numShare: numShare,
+      avgPrice: avgPrice,
+      currPrice: '--.--',
+      tag: tag,
+      userId: userId,
+      uniqueID: uniqueID,
+      assetType: assetType,
+      assetFirebaseID: doc.id,
+    };
+  }
 }
 
 export default Firebase;
