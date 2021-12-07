@@ -7,12 +7,7 @@ const HoldingCard = prop => {
   const [price, setPrice] = useState(prop.data.currPrice);
   const [shares, setShares] = useState(prop.data.numShare);
 
-  console.log("From holding card, here is the props");
-  console.log(prop);
-
   useEffect(() => {
-    console.log("Hi from Hodling");
-    console.log(prop);
     setPrice(prop.data.currPrice);
     setShares(prop.data.numShare);
   }, [prop.data.currPrice, prop.data.numShare]);

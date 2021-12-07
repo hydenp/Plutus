@@ -1,18 +1,14 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useContext, useRef, useEffect} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView } from "react-native";
-import { Modalize } from 'react-native-modalize';
-import firestore, { firebase, query, where, collection } from '@react-native-firebase/firestore';
-import uuid from 'uuid/v4';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Modalize } from "react-native-modalize";
 
-import FormInput from '../components/FormInput';
-import FormButton from '../components/FormButton';
-import { AuthContext } from '../navigation/AuthProvider';
+import FormInput from "../components/FormInput";
+import FormButton from "../components/FormButton";
+import { AuthContext } from "../navigation/AuthProvider";
 
-import PositionCard from '../components/PositionCard';
-import HoldingCard from '../components/HoldingCard';
-import AssetDecorator from '../utils/AssetDecorator';
-import DropDown from '../components/DropDown';
+import PositionCard from "../components/PositionCard";
+import AssetDecorator from "../utils/AssetDecorator";
 
 import Firebase from "../utils/Firebase";
 
@@ -33,8 +29,7 @@ const HomeScreen = ({navigation}) => {
     var modalizeRef;
 
     function createInstance() {
-        const modalizeRef = useRef(null);
-        return modalizeRef;
+      return useRef(null);
     }
 
     return {
@@ -64,8 +59,8 @@ const HomeScreen = ({navigation}) => {
   })();
 
   const checker = async() => {
-    var assetAlreadyExist = false;
-    var indexTemp = 0;
+    let assetAlreadyExist = false;
+    let indexTemp = 0;
 
     for (var i = 0; i < holdingList.length; i++){
       if (ticker === holdingList[i].ticker){
@@ -74,6 +69,7 @@ const HomeScreen = ({navigation}) => {
         var getAssetFirebaseID = holdingList[i].assetFirebaseID;
       }
     }
+    // when updating an asset
     if (assetAlreadyExist) {
 
       // close the modal
@@ -89,12 +85,13 @@ const HomeScreen = ({navigation}) => {
       })();
 
       //decorate asset obj here
-      var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
+      const numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
       numSharesUpdate.decorateAsset();
 
       //update asset on Firebase
       Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
+      // reset form input fields
       setTicker(null);
       setNumShares(null);
       setAvgPrice(null);
@@ -114,11 +111,12 @@ const HomeScreen = ({navigation}) => {
         avgPrice: avgPrice,
         tag: tag,
       };
+      // update the holding list with the new asset
       await (async function() {
           const newList = [...holdingList, addThis]
           setHoldingList(newList);
         })();
-      console.log(addThis);
+      // console.log(addThis);
 
       // add the new asset
       Firebase.addAssets(user, ticker, numShares, avgPrice, tag);

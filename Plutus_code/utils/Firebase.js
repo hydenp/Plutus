@@ -41,7 +41,7 @@ class Firebase {
       res.forEach(doc => {
         newAsset = Firebase.createObject(doc);
       });
-      console.log(newAsset);
+      // console.log(newAsset);
       return newAsset;
     });
   }
