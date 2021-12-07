@@ -90,9 +90,35 @@ const HomeScreen = ({navigation}) => {
     }
     else {
       // const newDocID = await Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
-      await Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
-      console.log("FROM HERE")
-      // console.log(newDocID);
+      // const newAss = await Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(res => {
+      //   console.log("FROM HERE");
+      //   console.log(res.id);
+      //   Firebase.fetchDocument(res).then(res =>{
+      //     console.log("GETTING NEW ASSET");
+      //
+      //     // const nextAsset = Firebase.createObject(res[0]);
+      //     let newAsset = null;
+      //     console.log(newAsset);
+      //     res.forEach(doc => {
+      //       newAsset = Firebase.createObject(doc);
+      //     });
+      //
+      //     return newAsset;
+      // });
+
+      const docID = await Firebase.handleAdd(user, ticker, numShares, avgPrice, tag);
+      console.log(docID);
+
+      const newAss = await Firebase.handleFetchDocument(docID);
+      console.log("NEW ASSET YEE?");
+      console.log(newAss);
+
+
+      // (async function() {
+      //   const currHolding = [...holdingList];
+      //   setHoldingList([...currHolding, newAsset]);
+      // })();
+    // });
     }
   };
 

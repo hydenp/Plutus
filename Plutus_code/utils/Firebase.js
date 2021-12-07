@@ -13,47 +13,63 @@ class Firebase {
     console.log('Num shares' + numShares);
     console.log('Avg Price' + avgPrice);
     console.log('Tag' + tag);
-    firestore().collection('assets').add({
+    return firestore().collection('assets').add({
         userId: user.uid,
-        ticker: ticker,
+      ticker: ticker,
         numShare: numShares,
         avgPrice: avgPrice,
         tag: tag,
       })
-      .then(res => {
-        console.log('Added Asset');
-        Alert.alert( //delete later
-          'Asset published!',
-          'Your Asset has been published Successfully!',
-        );
-        return res.id;
-        // return res.id;
-        // setTicker(null);
-        // setNumShares(null);
-        // setAvgPrice(null);
-        // setTag(null);
-      })
-      .catch(error => {
-        console.log(
-          'Something went wrong with added post to firestore.',
-          error,
-        );
-      });
   };
+
+  static async handleAdd(user, ticker, numShares, avgPrice, tag) {
+    return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
+      res => {
+        return res.id;
+        // console.log('FROM HERE');
+        // console.log(res.id);
+        // Firebase.fetchDocument(res).then(res => {
+        //   console.log("GETTING NEW ASSET");
+        //
+        //   // const nextAsset = Firebase.createObject(res[0]);
+        //   let newAsset = null;
+        //   console.log(newAsset);
+        //   res.forEach(doc => {
+        //     newAsset = Firebase.createObject(doc);
+        //   });
+        //   return newAsset;
+        // });
+      },
+    );
+  }
 
   static fetchData(user) {
     return firestore()
       .collection('assets')
       .where('userId', '==', user.uid)
       .get();
-  };
+  }
 
-  static fetchDocument(docID) {
+  static async handleFetchDocument(docID) {
+    return Firebase.fetchDocument(docID).then(res => {
+      console.log("GETTING NEW ASSET");
+
+      let newAsset = null;
+      // console.log(newAsset);
+      res.forEach(doc => {
+        newAsset = Firebase.createObject(doc);
+      });
+      console.log(newAsset);
+      return newAsset;
+    });
+  }
+
+  static async fetchDocument(docID) {
     return firestore()
       .collection('assets')
-      .where('uniqueID', '==', docID)
+      .where(firebase.firestore.FieldPath.documentId(), '==', docID)
       .get();
-  };
+  }
 
   static updateAsset(getAssetFirebaseID, holdingList, indexTemp) {
     firestore()
