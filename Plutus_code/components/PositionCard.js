@@ -56,13 +56,7 @@ class PositionCard extends Component {
   };
 
   checkUpdate = newList => {
-    console.log("*******************************");
-    console.log(newList);
-    console.log("*******************************");
     for (const key in this.state.holdings) {
-      console.log("HI FROM CHECK UPDATE");
-      console.log(this.state.holdings[key].numShare);
-      console.log(newList[key].numShare);
       if (
         this.state.holdings[key].numShare !== newList[key].numShare ||
         this.state.holdings[key].avgPrice !== newList[key].avgPrice
@@ -77,9 +71,9 @@ class PositionCard extends Component {
           {
             holdings: items,
           },
-          // () => {
-          //   this.updatePrices();
-          // },
+          () => {
+            this.updatePosition();
+          },
         );
       }
     }
@@ -126,19 +120,11 @@ class PositionCard extends Component {
     setTimeout(this.yourFunction, 5000);
   };
 
-  // printHoldings() {
-  //   for (const key in this.state.holdings) {
-  //     // console.log('key = ' + key);
-  //     console.log(this.state.holdings[key]);
-  //   }
-  // }
-
   renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
 
   render() {
     return (
       <View style={styles.container}>
-
         <View style={styles.position}>
           <Text style={styles.positionFont}>Hi Hyden  </Text>
           <Text style={styles.positionFont}>

@@ -20,19 +20,24 @@ class Firebase {
         avgPrice: avgPrice,
         tag: tag,
       })
-      .then(() => {
+      .then(res => {
         console.log('Added Asset');
         Alert.alert( //delete later
           'Asset published!',
           'Your Asset has been published Successfully!',
         );
+        return res.id;
+        // return res.id;
         // setTicker(null);
         // setNumShares(null);
         // setAvgPrice(null);
         // setTag(null);
       })
-      .catch((error) => {
-        console.log('Something went wrong with added post to firestore.', error);
+      .catch(error => {
+        console.log(
+          'Something went wrong with added post to firestore.',
+          error,
+        );
       });
   };
 
@@ -40,6 +45,13 @@ class Firebase {
     return firestore()
       .collection('assets')
       .where('userId', '==', user.uid)
+      .get();
+  };
+
+  static fetchDocument(docID) {
+    return firestore()
+      .collection('assets')
+      .where('uniqueID', '==', docID)
       .get();
   };
 

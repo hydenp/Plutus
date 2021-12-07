@@ -50,7 +50,7 @@ const HomeScreen = ({navigation}) => {
     };
   })();
 
-  const checker = () => {
+  const checker = async() => {
     var assetAlreadyExist = false;
     var indexTemp = 0;
 
@@ -62,30 +62,25 @@ const HomeScreen = ({navigation}) => {
       }
     }
     if (assetAlreadyExist){
-      //decorate asset obj here
-      // var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
-      // numSharesUpdate.decorateAsset();
 
-      //update asset on Firebase
-
-      //update screen
-      console.log('holdingListholdingList: ' + holdingList[indexTemp].numShare);
-      console.log(numShares);
-      const items = [...holdingList];
-      const item = {...holdingList[indexTemp]};
-      item.numShare = parseInt(numShares) + parseInt(item.numShare);
-      items[indexTemp] = item;
-
-      console.log('holdingListholdingList2222: ' + items[indexTemp].numShare);
-      console.log(items);
-
-
-      // setHoldingList([...items]);
-      setHoldingList([...items.slice(indexTemp), item]);
+      // make an async update to the holdingList
+      await (async function() {
+        const items = [...holdingList];
+        const item = { ...holdingList[indexTemp] };
+        item.numShare = parseInt(numShares) + parseInt(item.numShare);
+        items[indexTemp] = item;
+        console.log('result =', items);
+        setHoldingList(items);
+      })();
       console.log(holdingList);
 
-      Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
+      //decorate asset obj here
+      var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
+      numSharesUpdate.decorateAsset();
+
+      //update asset on Firebase
+      Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
       setTicker(null);
       setNumShares(null);
@@ -94,7 +89,10 @@ const HomeScreen = ({navigation}) => {
       setAssetType(null);
     }
     else {
-      Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
+      // const newDocID = await Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
+      await Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
+      console.log("FROM HERE")
+      // console.log(newDocID);
     }
   };
 
