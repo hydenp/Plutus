@@ -61,7 +61,7 @@ const HomeScreen = ({navigation}) => {
         var getAssetFirebaseID = holdingList[i].assetFirebaseID;
       }
     }
-    if (assetAlreadyExist){
+    if (assetAlreadyExist) {
 
       // make an async update to the holdingList
       await (async function() {
@@ -89,36 +89,20 @@ const HomeScreen = ({navigation}) => {
       setAssetType(null);
     }
     else {
-      // const newDocID = await Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
-      // const newAss = await Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(res => {
-      //   console.log("FROM HERE");
-      //   console.log(res.id);
-      //   Firebase.fetchDocument(res).then(res =>{
-      //     console.log("GETTING NEW ASSET");
-      //
-      //     // const nextAsset = Firebase.createObject(res[0]);
-      //     let newAsset = null;
-      //     console.log(newAsset);
-      //     res.forEach(doc => {
-      //       newAsset = Firebase.createObject(doc);
-      //     });
-      //
-      //     return newAsset;
-      // });
 
+      // add the new asset
       const docID = await Firebase.handleAdd(user, ticker, numShares, avgPrice, tag);
       console.log(docID);
 
-      const newAss = await Firebase.handleFetchDocument(docID);
+      // search for the new asset
+      const newAsset = await Firebase.handleFetchDocument(docID);
       console.log("NEW ASSET YEE?");
-      console.log(newAss);
+      console.log(newAsset);
 
-
-      // (async function() {
-      //   const currHolding = [...holdingList];
-      //   setHoldingList([...currHolding, newAsset]);
-      // })();
-    // });
+      await (async function() {
+        const newList = [...holdingList, newAsset]
+        setHoldingList(newList);
+      })();
     }
   };
 
