@@ -55,6 +55,36 @@ class PositionCard extends Component {
     }
   };
 
+  checkUpdate = newList => {
+    console.log("*******************************");
+    console.log(newList);
+    console.log("*******************************");
+    for (const key in this.state.holdings) {
+      console.log("HI FROM CHECK UPDATE");
+      console.log(this.state.holdings[key].numShare);
+      console.log(newList[key].numShare);
+      if (
+        this.state.holdings[key].numShare !== newList[key].numShare ||
+        this.state.holdings[key].avgPrice !== newList[key].avgPrice
+      ) {
+        console.log('updating something');
+        let items = [...this.state.holdings];
+        let updatedItem = {...this.state.holdings[key]};
+        updatedItem.numShare = newList[key].numShare;
+        updatedItem.avgPrice = newList[key].avgPrice;
+        items[key] = updatedItem;
+        this.setState(
+          {
+            holdings: items,
+          },
+          // () => {
+          //   this.updatePrices();
+          // },
+        );
+      }
+    }
+  };
+
   componentDidUpdate = props => {
     console.log('hello from update');
     console.log(props.holdingList);
@@ -69,6 +99,11 @@ class PositionCard extends Component {
             // this.updatePosition();
           },
         );
+        // if the list size did not change but something was updated
+        // a number of shares should be updated
+      } else {
+        console.log("FUCCKKKKKKKKK");
+        this.checkUpdate(props.holdingList);
       }
     } else {
       this.setState(

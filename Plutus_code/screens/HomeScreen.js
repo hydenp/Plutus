@@ -63,20 +63,29 @@ const HomeScreen = ({navigation}) => {
     }
     if (assetAlreadyExist){
       //decorate asset obj here
-      var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
-      numSharesUpdate.decorateAsset();
+      // var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
+      // numSharesUpdate.decorateAsset();
 
       //update asset on Firebase
-      Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
       //update screen
       console.log('holdingListholdingList: ' + holdingList[indexTemp].numShare);
-      let items = [...holdingList];
-      let item = {...items[indexTemp]};
-      item.numShare += numShares;
+      console.log(numShares);
+      const items = [...holdingList];
+      const item = {...holdingList[indexTemp]};
+      item.numShare = parseInt(numShares) + parseInt(item.numShare);
       items[indexTemp] = item;
+
       console.log('holdingListholdingList2222: ' + items[indexTemp].numShare);
-      setHoldingList(items);
+      console.log(items);
+
+
+      // setHoldingList([...items]);
+      setHoldingList([...items.slice(indexTemp), item]);
+      console.log(holdingList);
+
+      Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
+
 
       setTicker(null);
       setNumShares(null);

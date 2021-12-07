@@ -4,21 +4,23 @@ import {StyleSheet, View, Text} from 'react-native';
 import formatter from '../utils/NumberFormatter';
 
 const HoldingCard = prop => {
-  const [price, setPrice] = useState(prop.currPrice);
-
-
+  const [price, setPrice] = useState(prop.data.currPrice);
+  const [shares, setShares] = useState(prop.data.numShare);
 
   console.log("From holding card, here is the props");
   console.log(prop);
 
   useEffect(() => {
+    console.log("Hi from Hodling");
+    console.log(prop);
     setPrice(prop.data.currPrice);
-  }, [prop, prop.currPrice]);
+    setShares(prop.data.numShare);
+  }, [prop.data.currPrice, prop.data.numShare]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.holdingFont}>{prop.data.ticker}</Text>
-      <Text style={styles.holdingFont}>{prop.data.numShare}</Text>
+      <Text style={styles.holdingFont}>{shares}</Text>
       <Text style={styles.holdingFont}>{formatter.format(price)}</Text>
     </View>
   );

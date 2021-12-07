@@ -14,6 +14,7 @@ class AssetDecorator {
          const numShareFLT = parseFloat(this.assetObj.numShare);
          const totalAssetIncrement = addShareFLT + numShareFLT;
          this.assetObj.numShare = totalAssetIncrement;
+         // return totalAssetIncrement;
     }
 }
 
