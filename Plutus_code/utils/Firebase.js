@@ -1,47 +1,32 @@
 import React from 'react';
 
-import firestore, { firebase } from '@react-native-firebase/firestore';
-import { AuthContext } from '../navigation/AuthProvider';
-import { Alert } from "react-native";
-
+import firestore, {firebase} from '@react-native-firebase/firestore';
+// import { AuthContext } from '../navigation/AuthProvider';
+// import { Alert } from "react-native";
 
 class Firebase {
-
-  static async addAssets(user, ticker, numShares, avgPrice, tag) {
-    console.log('Got to addAssets func');
-    console.log('Ticker' + ticker);
-    console.log('Num shares' + numShares);
-    console.log('Avg Price' + avgPrice);
-    console.log('Tag' + tag);
-    return firestore().collection('assets').add({
-        userId: user.uid,
+  static addAssets(user, ticker, numShares, avgPrice, tag) {
+    // console.log('Got to addAssets func');
+    // console.log('Ticker' + ticker);
+    // console.log('Num shares' + numShares);
+    // console.log('Avg Price' + avgPrice);
+    // console.log('Tag' + tag);
+    firestore().collection('assets').add({
+      userId: user.uid,
       ticker: ticker,
-        numShare: numShares,
-        avgPrice: avgPrice,
-        tag: tag,
-      })
-  };
-
-  static async handleAdd(user, ticker, numShares, avgPrice, tag) {
-    return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
-      res => {
-        return res.id;
-        // console.log('FROM HERE');
-        // console.log(res.id);
-        // Firebase.fetchDocument(res).then(res => {
-        //   console.log("GETTING NEW ASSET");
-        //
-        //   // const nextAsset = Firebase.createObject(res[0]);
-        //   let newAsset = null;
-        //   console.log(newAsset);
-        //   res.forEach(doc => {
-        //     newAsset = Firebase.createObject(doc);
-        //   });
-        //   return newAsset;
-        // });
-      },
-    );
+      numShare: numShares,
+      avgPrice: avgPrice,
+      tag: tag,
+    });
   }
+
+  // static async handleAdd(user, ticker, numShares, avgPrice, tag) {
+  //   return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
+  //     res => {
+  //       return res.id;
+  //     },
+  //   );
+  // }
 
   static fetchData(user) {
     return firestore()
@@ -52,10 +37,7 @@ class Firebase {
 
   static async handleFetchDocument(docID) {
     return Firebase.fetchDocument(docID).then(res => {
-      console.log("GETTING NEW ASSET");
-
       let newAsset = null;
-      // console.log(newAsset);
       res.forEach(doc => {
         newAsset = Firebase.createObject(doc);
       });

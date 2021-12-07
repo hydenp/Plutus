@@ -106,17 +106,30 @@ const HomeScreen = ({navigation}) => {
       // close the modal
       Singleton.setInstance(false);
 
-      // add the new asset
-      const docID = await Firebase.handleAdd(user, ticker, numShares, avgPrice, tag);
-      console.log(docID);
-
-      // search for the new asset
-      const newAsset = await Firebase.handleFetchDocument(docID);
-
+      const addThis = {
+        id: Math.round(Math.random() * 100000000000),
+        userId: user.uid,
+        ticker: ticker,
+        numShare: numShares,
+        avgPrice: avgPrice,
+        tag: tag,
+      };
       await (async function() {
-        const newList = [...holdingList, newAsset]
-        setHoldingList(newList);
-      })();
+          const newList = [...holdingList, addThis]
+          setHoldingList(newList);
+        })();
+      console.log(addThis);
+
+      // add the new asset
+      Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
+
+      // reset fields for add modal
+      setTicker(null);
+      setNumShares(null);
+      setAvgPrice(null);
+      setTag(null);
+      setAssetType(null);
+
     }
   };
 
