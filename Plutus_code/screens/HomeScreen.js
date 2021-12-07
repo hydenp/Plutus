@@ -42,11 +42,24 @@ const HomeScreen = ({navigation}) => {
             if (!modalizeRef) {
               modalizeRef = createInstance();
             }
-            if(open == true){
+            if (open === true){
               modalizeRef.current?.open();
             }
             return modalizeRef;
-        }
+        },
+        // function to set modal closed or open
+        setInstance: function (status) {
+          if (!modalizeRef) {
+            modalizeRef = createInstance();
+          }
+          if (status === true){
+            modalizeRef.current?.open();
+          }
+          if (status === false){
+            modalizeRef.current?.close();
+          }
+          return modalizeRef;
+        },
     };
   })();
 
@@ -63,17 +76,17 @@ const HomeScreen = ({navigation}) => {
     }
     if (assetAlreadyExist) {
 
+      // close the modal
+      Singleton.setInstance(false);
+
       // make an async update to the holdingList
       await (async function() {
         const items = [...holdingList];
         const item = { ...holdingList[indexTemp] };
         item.numShare = parseInt(numShares) + parseInt(item.numShare);
         items[indexTemp] = item;
-        console.log('result =', items);
         setHoldingList(items);
       })();
-      console.log(holdingList);
-
 
       //decorate asset obj here
       var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
@@ -90,14 +103,15 @@ const HomeScreen = ({navigation}) => {
     }
     else {
 
+      // close the modal
+      Singleton.setInstance(false);
+
       // add the new asset
       const docID = await Firebase.handleAdd(user, ticker, numShares, avgPrice, tag);
       console.log(docID);
 
       // search for the new asset
       const newAsset = await Firebase.handleFetchDocument(docID);
-      console.log("NEW ASSET YEE?");
-      console.log(newAsset);
 
       await (async function() {
         const newList = [...holdingList, newAsset]

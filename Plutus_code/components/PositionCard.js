@@ -17,7 +17,7 @@ class PositionCard extends Component {
 
   constructor() {
     super();
-    // this.yourFunction();
+    this.yourFunction();
   }
 
   updatePosition = () => {
@@ -111,13 +111,10 @@ class PositionCard extends Component {
     }
   };
 
+  // function to call update prices every 15 seconds
   yourFunction = () => {
-    // do whatever you like here
-
-    console.log("hello!");
     this.updatePrices();
-
-    setTimeout(this.yourFunction, 5000);
+    setTimeout(this.yourFunction, 15000);
   };
 
   renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
@@ -165,16 +162,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25,
   },
-  // list: {
-  //   borderColor: 'black',
-  //   borderWidth: 2,
-  //   // padding: 10,
-  //   // margin: 5,
-  //   flex: 1,
-  //   // alignItems: 'center',
-  //   justifyContent: 'center',
-  //   width: '100%',
-  //   height: 'auto',
-  //   color: 'white',
-  // },
 });
