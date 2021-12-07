@@ -161,7 +161,7 @@ const HomeScreen = ({navigation}) => {
           <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
 
 
-          <Modalize ref={Singleton.getInstance(false)} snapPoint={400}>
+          <Modalize ref={Singleton.getInstance(false)} snapPoint={470}>
             <View style={styles.container}>
               <Text style={styles.titleText}> Add a new position </Text>
               {/* <FormInput
