@@ -1,18 +1,16 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useContext, useRef, useEffect} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView } from "react-native";
-import { Modalize } from 'react-native-modalize';
-import firestore, { firebase, query, where, collection } from '@react-native-firebase/firestore';
-import uuid from 'uuid/v4';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Modalize } from "react-native-modalize";
 
-import FormInput from '../components/FormInput';
-import FormButton from '../components/FormButton';
-import { AuthContext } from '../navigation/AuthProvider';
+import FormInput from "../components/FormInput";
+import FormButton from "../components/FormButton";
+import { AuthContext } from "../navigation/AuthProvider";
 
-import PositionCard from '../components/PositionCard';
-import HoldingCard from '../components/HoldingCard';
-import AssetDecorator from '../utils/AssetDecorator';
-import DropDown from '../components/DropDown';
+import PositionCard from "../components/PositionCard";
+import AssetDecorator from "../utils/AssetDecorator";
+
+import Firebase from "../utils/Firebase";
 
 
 const HomeScreen = ({navigation}) => {
@@ -29,28 +27,40 @@ const HomeScreen = ({navigation}) => {
 
   var Singleton = (function () {
     var modalizeRef;
-  
+
     function createInstance() {
-        const modalizeRef = useRef(null);
-        return modalizeRef;
+      return useRef(null);
     }
-  
+
     return {
         getInstance: function (open) {
             if (!modalizeRef) {
               modalizeRef = createInstance();
             }
-            if(open == true){
+            if (open === true){
               modalizeRef.current?.open();
             }
             return modalizeRef;
-        }
+        },
+        // function to set modal closed or open
+        setInstance: function (status) {
+          if (!modalizeRef) {
+            modalizeRef = createInstance();
+          }
+          if (status === true){
+            modalizeRef.current?.open();
+          }
+          if (status === false){
+            modalizeRef.current?.close();
+          }
+          return modalizeRef;
+        },
     };
   })();
 
-  const checker = () => {
-    var assetAlreadyExist = false;
-    var indexTemp = 0;
+  const checker = async() => {
+    let assetAlreadyExist = false;
+    let indexTemp = 0;
 
     for (var i = 0; i < holdingList.length; i++){
       if (ticker === holdingList[i].ticker){
@@ -59,101 +69,79 @@ const HomeScreen = ({navigation}) => {
         var getAssetFirebaseID = holdingList[i].assetFirebaseID;
       }
     }
-    if (assetAlreadyExist){
+    // when updating an asset
+    if (assetAlreadyExist) {
+
+      // close the modal
+      Singleton.setInstance(false);
+
+      // make an async update to the holdingList
+      await (async function() {
+        const items = [...holdingList];
+        const item = { ...holdingList[indexTemp] };
+        item.numShare = parseInt(numShares) + parseInt(item.numShare);
+        items[indexTemp] = item;
+        setHoldingList(items);
+      })();
+
       //decorate asset obj here
-      var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
+      const numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
       numSharesUpdate.decorateAsset();
 
       //update asset on Firebase
-      firestore()
-        .collection('assets')
-        .doc(getAssetFirebaseID)
-        .update({
-          numShare: holdingList[indexTemp].numShare,
-        })
-        .then(() => {
-          console.log('Asset updated correctly');
-        });
+      Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
-        setTicker(null);
-        setNumShares(null);
-        setAvgPrice(null);
-        setTag(null);
-        setAssetType(null);
-    }
-    else {
-      addAssets();
-    }
-  };
-
-  const addAssets = async () => {
-    firestore().collection('assets').add({
-      userId: user.uid,
-      ticker: ticker,
-      numShare: numShares,
-      avgPrice: avgPrice,
-      tag: tag,
-      uniqueID: uuid(),
-      assetType: assetType,
-    })
-    .then(function(docRef) {
-      console.log('Added Asset with id: ' + docRef.id);
-      Alert.alert( //delete later
-        'Asset published!',
-        'Your Asset has been published successfully!',
-      );
+      // reset form input fields
       setTicker(null);
       setNumShares(null);
       setAvgPrice(null);
       setTag(null);
       setAssetType(null);
-    })
-    .catch((error) => {
-      console.log('Something went wrong with added post to firestore.', error);
-    });
-  };
+    }
+    else {
 
-  const fetchData = async() => {
-    try {
-      const list = [];
-      await firestore()
-        .collection('assets')
-        .where('userId', '==', user.uid)
-        .get()
-        .then((querySnapshot) => {
+      // close the modal
+      Singleton.setInstance(false);
 
-          querySnapshot.forEach(doc => {
-            const key = Math.round(Math.random() * 100000000000);
-            const {ticker, numShare, avgPrice, tag, userId, uniqueID, assetType, assetFirebaseID} = doc.data();
+      const addThis = {
+        id: Math.round(Math.random() * 100000000000),
+        userId: user.uid,
+        ticker: ticker,
+        numShare: numShares,
+        avgPrice: avgPrice,
+        tag: tag,
+      };
+      // update the holding list with the new asset
+      await (async function() {
+          const newList = [...holdingList, addThis]
+          setHoldingList(newList);
+        })();
+      // console.log(addThis);
 
-            list.push({
-              id: key,
-              ticker: ticker,
-              numShare: numShare,
-              avgPrice: avgPrice,
-              currPrice: '--.--',
-              tag: tag,
-              userId: userId,
-              uniqueID: uniqueID,
-              assetType: assetType,
-              assetFirebaseID: doc.id,
-             });
-          });
-        });
-      console.log("List = " + list)
-      setHoldingList(list);
-      if (loading){
-        setLoading(false);
-      }
-      console.log('Assets: ', list);
-    } catch (e) {
-      console.log('Fetch error is: ', e);
+      // add the new asset
+      Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
+
+      // reset fields for add modal
+      setTicker(null);
+      setNumShares(null);
+      setAvgPrice(null);
+      setTag(null);
+      setAssetType(null);
+
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    Firebase.fetchData(user).then(querySnapshot => {
+      const list = [];
+      querySnapshot.forEach(doc => {
+        const nextAsset = Firebase.createObject(doc);
+        list.push(nextAsset);
+      });
+      setHoldingList(list);
+      setLoading(false);
+    });
+  }, [user]);
 
   return (
     <SafeAreaView>
@@ -164,14 +152,14 @@ const HomeScreen = ({navigation}) => {
 
 
           {/*{holdingList.map((holdingList, key) => <HoldingCard key={key} ticker={holdingList.ticker} numShares={holdingList.numShare}/>)}*/}
-          <View style={styles.boxWithShadow}>
+          {/*<View style={styles.boxWithShadow}>*/}
             <PositionCard  holdingList={holdingList}/>
-          </View>
+          {/*</View>*/}
 
-          <FormButton buttonTitle="Add Position" onPress={() => modalizeRef.current?.open()} />
+          <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
 
 
-          <Modalize ref={Singleton.getInstance(false)} snapPoint={400}>
+          <Modalize ref={Singleton.getInstance(false)} snapPoint={470}>
             <View style={styles.container}>
               <Text style={styles.titleText}> Add a new position </Text>
               {/* <FormInput
