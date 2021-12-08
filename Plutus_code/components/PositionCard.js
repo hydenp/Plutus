@@ -8,6 +8,7 @@ import TickerInfo from '../utils/TickerInfo';
 import formatter from '../utils/NumberFormatter';
 
 
+
 class PositionCard extends Component {
   state = {
     position: 0,
