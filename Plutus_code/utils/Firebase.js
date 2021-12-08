@@ -2,15 +2,9 @@
 import firestore, { firebase } from '@react-native-firebase/firestore';
 
 class Firebase {
-
-  static async addAssets(user, ticker, numShares, avgPrice, tag) {
-    console.log('Got to addAssets func');
-    console.log('Ticker' + ticker);
-    console.log('Num shares' + numShares);
-    console.log('Avg Price' + avgPrice);
-    console.log('Tag' + tag);
-    return firestore().collection('assets').add({
-        userId: user.uid,
+  static addAssets(user, ticker, numShares, avgPrice, tag) {
+    firestore().collection('assets').add({
+      userId: user.uid,
       ticker: ticker,
         numShare: numShares,
         avgPrice: avgPrice,
@@ -24,7 +18,9 @@ class Firebase {
         return res.id;
       },
     );
+
   }
+
 
   static fetchData(user) {
     return firestore()
@@ -35,13 +31,11 @@ class Firebase {
 
   static async handleFetchDocument(docID) {
     return Firebase.fetchDocument(docID).then(res => {
-      console.log('GETTING NEW ASSET');
-
       let newAsset = null;
       res.forEach(doc => {
         newAsset = Firebase.createObject(doc);
       });
-      console.log(newAsset);
+      // console.log(newAsset);
       return newAsset;
     });
   }

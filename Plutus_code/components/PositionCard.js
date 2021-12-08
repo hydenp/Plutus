@@ -13,7 +13,7 @@ class PositionCard extends Component {
 
   constructor() {
     super();
-    // this.yourFunction();
+    this.yourFunction();
   }
 
   updatePosition = () => {
@@ -35,7 +35,7 @@ class PositionCard extends Component {
     for (const key in this.state.holdings) {
       TickerInfo.getData(this.state.holdings[key].ticker)
         .then(res => {
-          console.log(this.state);
+          // console.log(this.state);
           let items = [...this.state.holdings];
           let item = {...items[key]};
           item.currPrice = res.data.c;
@@ -73,8 +73,8 @@ class PositionCard extends Component {
   };
 
   componentDidUpdate = props => {
-    console.log('hello from update');
-    console.log(props.holdingList);
+    // console.log('hello from update');
+    // console.log(props.holdingList);
     if (this.state.holdings !== null) {
       if (this.state.holdings.length !== props.holdingList.length) {
         this.setState(
@@ -102,11 +102,11 @@ class PositionCard extends Component {
     }
   };
 
+  // function to call update prices every 15 seconds
   yourFunction = () => {
     // do whatever you like here
     this.updatePrices();
-
-    setTimeout(this.yourFunction, 5000);
+    setTimeout(this.yourFunction, 15000);
   };
 
   renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;

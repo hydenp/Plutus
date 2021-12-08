@@ -3,11 +3,13 @@ import React, {useState, useContext, useRef, useEffect} from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 
+
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
 import PositionCard from '../components/PositionCard';
 import AssetDecorator from '../utils/AssetDecorator';
+
 import Firebase from '../utils/Firebase';
 
 
@@ -26,8 +28,7 @@ const HomeScreen = ({navigation}) => {
     var modalizeRef;
 
     function createInstance() {
-        const modalizeRef = useRef(null);
-        return modalizeRef;
+      return useRef(null);
     }
 
     return {
@@ -39,13 +40,26 @@ const HomeScreen = ({navigation}) => {
               modalizeRef.current?.open();
             }
             return modalizeRef;
-        }
+        },
+        // function to set modal closed or open
+        setInstance: function (status) {
+          if (!modalizeRef) {
+            modalizeRef = createInstance();
+          }
+          if (status === true){
+            modalizeRef.current?.open();
+          }
+          if (status === false){
+            modalizeRef.current?.close();
+          }
+          return modalizeRef;
+        },
     };
   })();
 
   const checker = async() => {
-    var assetAlreadyExist = false;
-    var indexTemp = 0;
+    let assetAlreadyExist = false;
+    let indexTemp = 0;
 
     for (var i = 0; i < holdingList.length; i++){
       if (ticker === holdingList[i].ticker){
@@ -54,26 +68,27 @@ const HomeScreen = ({navigation}) => {
         var getAssetFirebaseID = holdingList[i].assetFirebaseID;
       }
     }
+    // when updating an asset
     if (assetAlreadyExist) {
+
       // make an async update to the holdingList
       await (async function() {
         const items = [...holdingList];
         const item = { ...holdingList[indexTemp] };
         item.numShare = parseInt(numShares) + parseInt(item.numShare);
         items[indexTemp] = item;
-        console.log('result =', items);
         setHoldingList(items);
       })();
-      console.log(holdingList);
-
 
       //decorate asset obj here
+
       var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares); //THIS IS AN EXAMPLE OF DECORATOR PATTERN
       numSharesUpdate.decorateAsset();
 
       //update asset on Firebase
       Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
+      // reset form input fields
       setTicker(null);
       setNumShares(null);
       setAvgPrice(null);
@@ -112,7 +127,9 @@ const HomeScreen = ({navigation}) => {
           <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
 
 
+
           <Modalize ref={Singleton.getInstance(false)} snapPoint={500}>
+
             <View style={styles.container}>
               <Text style={styles.titleText}> Add a new position </Text>
               <FormInput
