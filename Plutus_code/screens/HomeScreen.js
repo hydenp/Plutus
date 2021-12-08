@@ -8,6 +8,7 @@ import uuid from 'uuid/v4';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
+import { AppStack } from '../navigation/AppStack';
 
 import PositionCard from '../components/PositionCard';
 import HoldingCard from '../components/HoldingCard';
@@ -134,7 +135,7 @@ const HomeScreen = ({navigation}) => {
           <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
 
 
-          <Modalize ref={Singleton.getInstance(false)} snapPoint={400}>
+          <Modalize ref={Singleton.getInstance(false)} snapPoint={500}>
             <View style={styles.container}>
               <Text style={styles.titleText}> Add a new position </Text>
               {/* <FormInput
@@ -172,8 +173,9 @@ const HomeScreen = ({navigation}) => {
               <FormButton buttonTitle="Save" onPress={checker}/>
             </View>
           </Modalize>
-
+          {/* <FormButton buttonTitle="OI" onPress={() => navigation.navigate('EditAsset')} /> */}
           <FormButton buttonTitle="Logout" onPress={() => logout()} />
+          
       </View>
     </SafeAreaView>
   );

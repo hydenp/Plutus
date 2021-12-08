@@ -8,6 +8,7 @@ import TickerInfo from '../utils/TickerInfo';
 import formatter from '../utils/NumberFormatter';
 
 
+
 class PositionCard extends Component {
   state = {
     position: 0,
@@ -96,7 +97,7 @@ class PositionCard extends Component {
         // if the list size did not change but something was updated
         // a number of shares should be updated
       } else {
-        console.log("FUCCKKKKKKKKK");
+        // console.log("FUCCKKKKKKKKK");
         this.checkUpdate(props.holdingList);
       }
     } else {
