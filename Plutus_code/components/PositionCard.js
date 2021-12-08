@@ -1,14 +1,9 @@
 import React, {Component} from 'react';
-import {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, FlatList} from 'react-native';
-
+import {StyleSheet, View, Text, FlatList} from 'react-native';
 
 import HoldingCard from './HoldingCard';
 import TickerInfo from '../utils/TickerInfo';
 import formatter from '../utils/NumberFormatter';
-
-
-
 class PositionCard extends Component {
   state = {
     position: 0,
@@ -37,10 +32,7 @@ class PositionCard extends Component {
   };
 
   updatePrices = () => {
-    // console.log('trynna update prices');
-    // console.log(this.state.holdings);
     for (const key in this.state.holdings) {
-      // console.log("ticker = " + this.state.holdings[key].ticker);
       TickerInfo.getData(this.state.holdings[key].ticker)
         .then(res => {
           // console.log(this.state);
@@ -91,7 +83,6 @@ class PositionCard extends Component {
           },
           () => {
             this.updatePrices();
-            // this.updatePosition();
           },
         );
         // if the list size did not change but something was updated
@@ -113,6 +104,7 @@ class PositionCard extends Component {
 
   // function to call update prices every 15 seconds
   yourFunction = () => {
+    // do whatever you like here
     this.updatePrices();
     setTimeout(this.yourFunction, 15000);
   };

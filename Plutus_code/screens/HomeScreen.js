@@ -1,16 +1,14 @@
 /* eslint-disable prettier/prettier */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { Modalize } from "react-native-modalize";
+import React, {useState, useContext, useRef, useEffect} from 'react';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { Modalize } from 'react-native-modalize';
+
 
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
-import { AppStack } from '../navigation/AppStack';
-
-
-import PositionCard from "../components/PositionCard";
-import AssetDecorator from "../utils/AssetDecorator";
+import PositionCard from '../components/PositionCard';
+import AssetDecorator from '../utils/AssetDecorator';
 
 import Firebase from '../utils/Firebase';
 
@@ -22,7 +20,6 @@ const HomeScreen = ({navigation}) => {
   const [numShares, setNumShares] = useState(null);
   const [avgPrice, setAvgPrice] = useState(null);
   const [tag, setTag] = useState(null);
-  const [assetType, setAssetType] = useState(null);
   const [loading, setLoading] = useState(true);
   const [holdingList, setHoldingList] = useState([]);
 
@@ -74,9 +71,6 @@ const HomeScreen = ({navigation}) => {
     // when updating an asset
     if (assetAlreadyExist) {
 
-      // close the modal
-      Singleton.setInstance(false);
-
       // make an async update to the holdingList
       await (async function() {
         const items = [...holdingList];
@@ -87,7 +81,8 @@ const HomeScreen = ({navigation}) => {
       })();
 
       //decorate asset obj here
-      const numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
+
+      var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares); //THIS IS AN EXAMPLE OF DECORATOR PATTERN
       numSharesUpdate.decorateAsset();
 
       //update asset on Firebase
@@ -98,38 +93,18 @@ const HomeScreen = ({navigation}) => {
       setNumShares(null);
       setAvgPrice(null);
       setTag(null);
-      setAssetType(null);
     }
     else {
-
-      // close the modal
-      Singleton.setInstance(false);
-
-      const addThis = {
-        id: Math.round(Math.random() * 100000000000),
-        userId: user.uid,
-        ticker: ticker,
-        numShare: numShares,
-        avgPrice: avgPrice,
-        tag: tag,
-      };
-      // update the holding list with the new asset
-      await (async function() {
-          const newList = [...holdingList, addThis]
-          setHoldingList(newList);
-        })();
-      // console.log(addThis);
-
       // add the new asset
-      Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
-
-      // reset fields for add modal
-      setTicker(null);
-      setNumShares(null);
-      setAvgPrice(null);
-      setTag(null);
-      setAssetType(null);
-
+      const docID = await Firebase.handleAdd(user, ticker, numShares, avgPrice, tag);
+      console.log('Doc ID: ' + docID);
+      // search for the new asset
+      const newAsset = await Firebase.handleFetchDocument(docID);
+      console.log('New Asset: ' + newAsset);
+      await (async function() {
+        const newList = [...holdingList, newAsset];
+        setHoldingList(newList);
+      })();
     }
   };
 
@@ -148,16 +123,7 @@ const HomeScreen = ({navigation}) => {
   return (
     <SafeAreaView>
       <View style={styles.container}>
-          {/*<Text> Home Screen </Text>*/}
-          {/* <PositionCard holdings={holdingList}/> */}
-          {/* {console.log('TEST: ' + holdingList.map(block => PositionCard(block)))} */}
-
-
-          {/*{holdingList.map((holdingList, key) => <HoldingCard key={key} ticker={holdingList.ticker} numShares={holdingList.numShare}/>)}*/}
-          {/*<View style={styles.boxWithShadow}>*/}
-            <PositionCard  holdingList={holdingList}/>
-          {/*</View>*/}
-
+          <PositionCard  holdingList={holdingList}/>
           <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
 
 
@@ -166,12 +132,6 @@ const HomeScreen = ({navigation}) => {
 
             <View style={styles.container}>
               <Text style={styles.titleText}> Add a new position </Text>
-              {/* <FormInput
-                labelValue={assetType}
-                onChangeText={(assetTypeValue) => setAssetType(assetTypeValue)}
-                placeholder="Temp: Asset Type (Stock, Bond, REITs)"
-                autoCorrect={false}
-              /> */}
               <FormInput
                 value={ticker}
                 onChangeText={(ticekerValue) => setTicker(ticekerValue)}
@@ -201,9 +161,7 @@ const HomeScreen = ({navigation}) => {
               <FormButton buttonTitle="Save" onPress={checker}/>
             </View>
           </Modalize>
-          {/* <FormButton buttonTitle="OI" onPress={() => navigation.navigate('EditAsset')} /> */}
           <FormButton buttonTitle="Logout" onPress={() => logout()} />
-          
       </View>
     </SafeAreaView>
   );
@@ -222,11 +180,4 @@ const styles = StyleSheet.create({
       paddingBottom: 20,
       fontSize: 25,
     },
-    // boxWithShadow: {
-    //   shadowColor: '#000',
-    //   shadowOffset: { width: 0, height: 1 },
-    //   shadowOpacity: 0.8,
-    //   shadowRadius: 2,
-    //   elevation: 5,
-    // },
 });

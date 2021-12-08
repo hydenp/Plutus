@@ -4,15 +4,7 @@ import React, {useState, useEffect, useRef, createContext} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import formatter from '../utils/NumberFormatter';
-import { Modalize } from 'react-native-modalize';
-import FormInput from '../components/FormInput';
-import FormButton from '../components/FormButton';
-import { AppStack } from '../navigation/AppStack';
-import HomeScreen from '../screens/HomeScreen';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { NavigationHelpersContext } from '@react-navigation/core';
 import { useNavigation } from '@react-navigation/native';
-import EditAssetScreen from '../screens/EditAssetScreen';
 
 export const assetContext = createContext();
 
@@ -21,7 +13,6 @@ const HoldingCard = (prop) => {
   const [shares, setShares] = useState(prop.data.numShare);
   const modalizeRefEdit =  useRef(null);
   const navigation = useNavigation();
-
 
   useEffect(() => {
     setPrice(prop.data.currPrice);
@@ -36,10 +27,6 @@ const HoldingCard = (prop) => {
         <Text style={styles.holdingFont}>{formatter.format(price)}</Text>
       </TouchableOpacity>
     </View>
-      
-      
-
-    
   );
 };
 
