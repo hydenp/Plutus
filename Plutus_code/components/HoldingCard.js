@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState, useEffect, useRef, createContext} from 'react';
 
 import {StyleSheet, View, Text} from 'react-native';
@@ -19,22 +20,22 @@ const HoldingCard = (prop) => {
   const [price, setPrice] = useState(prop.data.currPrice);
   const [shares, setShares] = useState(prop.data.numShare);
   const modalizeRefEdit =  useRef(null);
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
-  console.log("From holding card, here is the props");
-  console.log(prop);
+  // console.log("From holding card, here is the props");
+  // console.log(prop);
 
   useEffect(() => {
-    console.log("Hi from Hodling");
-    console.log(prop);
+    // console.log("Hi from Hodling");
+    // console.log(prop.data.assetFirebaseID);
     setPrice(prop.data.currPrice);
     setShares(prop.data.numShare);
   }, [prop.data.currPrice, prop.data.numShare]);
 
   return (
     <View>
-      <TouchableOpacity style={styles.container} onPress={() => navigation.navigate("EditAsset", {ticker: prop.data.ticker, shares: shares, price: price})}>
-        <Text style={styles.holdingFont}>{prop.data.ticker}</Text>
+      <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('EditAsset', {getTicker: prop.data.ticker, getShares: shares, getPrice: price, getID: prop.data.assetFirebaseID, getTag: prop.data.tag})}>
+        <Text style={styles.holdingFont}>{prop.data.ticker}</Text> 
         <Text style={styles.holdingFont}>{shares}</Text>
         <Text style={styles.holdingFont}>{formatter.format(price)}</Text>
       </TouchableOpacity>

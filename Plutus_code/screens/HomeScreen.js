@@ -15,7 +15,7 @@ import HoldingCard from '../components/HoldingCard';
 import AssetDecorator from '../utils/AssetDecorator';
 import DropDown from '../components/DropDown';
 
-import Firebase from "../utils/Firebase";
+import Firebase from '../utils/Firebase';
 
 
 const HomeScreen = ({navigation}) => {

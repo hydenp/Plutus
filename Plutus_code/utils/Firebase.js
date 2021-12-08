@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
 
 import firestore, { firebase } from '@react-native-firebase/firestore';
@@ -19,7 +20,7 @@ class Firebase {
         numShare: numShares,
         avgPrice: avgPrice,
         tag: tag,
-      })
+      });
   };
 
   static async handleAdd(user, ticker, numShares, avgPrice, tag) {
@@ -52,7 +53,7 @@ class Firebase {
 
   static async handleFetchDocument(docID) {
     return Firebase.fetchDocument(docID).then(res => {
-      console.log("GETTING NEW ASSET");
+      console.log('GETTING NEW ASSET');
 
       let newAsset = null;
       // console.log(newAsset);
@@ -81,6 +82,47 @@ class Firebase {
       .then(() => {
         console.log('Asset updated correctly');
       });
+  }
+
+  static editAsset(assetFirebaseID, changeNumSharesVal, changeTagVal) {
+    if (changeNumSharesVal != null){
+      firestore()
+      .collection('assets')
+      .doc(assetFirebaseID)
+      .update({
+        numShare: changeNumSharesVal,
+      })
+      .then(() => {
+        console.log('Asset updated correctly');
+      });
+    }
+    if (changeTagVal != null){
+      firestore()
+      .collection('assets')
+      .doc(assetFirebaseID)
+      .update({
+        tag: changeTagVal,
+      })
+      .then(() => {
+        console.log('Asset updated correctly');
+      });
+    }
+    else {
+      console.log('Error uopdating assets');
+    }
+
+  }
+
+  static deleteAsset(assetFirebaseID) {
+    if (assetFirebaseID == null){
+      console.log('Error: asset id not found');
+    }
+    else {
+      firestore()
+      .collection('assets')
+      .doc(assetFirebaseID)
+      .delete();
+    }
   }
 
   static createObject(doc) {
