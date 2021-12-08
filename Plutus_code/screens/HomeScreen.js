@@ -23,7 +23,7 @@ const HomeScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [holdingList, setHoldingList] = useState([]);
 
-
+  //THIS IS AN EXAMPLE OF THE SINGLETON PATTERN
   var Singleton = (function () {
     var modalizeRef;
 
@@ -124,11 +124,10 @@ const HomeScreen = ({navigation}) => {
     <SafeAreaView>
       <View style={styles.container}>
           <PositionCard  holdingList={holdingList}/>
-          <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
+          <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} /> {/*//THIS IS AN EXAMPLE OF DECORATOR PATTERN */}
 
 
-
-          <Modalize ref={Singleton.getInstance(false)} snapPoint={500}>
+          <Modalize ref={Singleton.getInstance(false)} snapPoint={500}>{/*//THIS IS AN EXAMPLE OF DECORATOR PATTERN */}
 
             <View style={styles.container}>
               <Text style={styles.titleText}> Add a new position </Text>
