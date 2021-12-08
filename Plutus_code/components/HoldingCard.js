@@ -22,12 +22,8 @@ const HoldingCard = (prop) => {
   const modalizeRefEdit =  useRef(null);
   const navigation = useNavigation();
 
-  // console.log("From holding card, here is the props");
-  // console.log(prop);
 
   useEffect(() => {
-    // console.log("Hi from Hodling");
-    // console.log(prop.data.assetFirebaseID);
     setPrice(prop.data.currPrice);
     setShares(prop.data.numShare);
   }, [prop.data.currPrice, prop.data.numShare]);

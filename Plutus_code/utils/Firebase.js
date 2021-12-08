@@ -1,21 +1,19 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 
-import firestore, { firebase } from '@react-native-firebase/firestore';
-import { AuthContext } from '../navigation/AuthProvider';
-import { Alert } from "react-native";
-
+import firestore, {firebase} from '@react-native-firebase/firestore';
+// import { AuthContext } from '../navigation/AuthProvider';
+// import { Alert } from "react-native";
 
 class Firebase {
-
-  static async addAssets(user, ticker, numShares, avgPrice, tag) {
-    console.log('Got to addAssets func');
-    console.log('Ticker' + ticker);
-    console.log('Num shares' + numShares);
-    console.log('Avg Price' + avgPrice);
-    console.log('Tag' + tag);
-    return firestore().collection('assets').add({
-        userId: user.uid,
+  static addAssets(user, ticker, numShares, avgPrice, tag) {
+    // console.log('Got to addAssets func');
+    // console.log('Ticker' + ticker);
+    // console.log('Num shares' + numShares);
+    // console.log('Avg Price' + avgPrice);
+    // console.log('Tag' + tag);
+    firestore().collection('assets').add({
+      userId: user.uid,
       ticker: ticker,
         numShare: numShares,
         avgPrice: avgPrice,
@@ -42,7 +40,16 @@ class Firebase {
         // });
       },
     );
+
   }
+
+  // static async handleAdd(user, ticker, numShares, avgPrice, tag) {
+  //   return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
+  //     res => {
+  //       return res.id;
+  //     },
+  //   );
+  // }
 
   static fetchData(user) {
     return firestore()
@@ -53,14 +60,11 @@ class Firebase {
 
   static async handleFetchDocument(docID) {
     return Firebase.fetchDocument(docID).then(res => {
-      console.log('GETTING NEW ASSET');
-
       let newAsset = null;
-      // console.log(newAsset);
       res.forEach(doc => {
         newAsset = Firebase.createObject(doc);
       });
-      console.log(newAsset);
+      // console.log(newAsset);
       return newAsset;
     });
   }

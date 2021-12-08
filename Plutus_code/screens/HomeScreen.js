@@ -1,19 +1,16 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useContext, useRef, useEffect} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, SafeAreaView } from "react-native";
-import { Modalize } from 'react-native-modalize';
-import firestore, { firebase, query, where, collection } from '@react-native-firebase/firestore';
-import uuid from 'uuid/v4';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Modalize } from "react-native-modalize";
 
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import { AuthContext } from '../navigation/AuthProvider';
 import { AppStack } from '../navigation/AppStack';
 
-import PositionCard from '../components/PositionCard';
-import HoldingCard from '../components/HoldingCard';
-import AssetDecorator from '../utils/AssetDecorator';
-import DropDown from '../components/DropDown';
+
+import PositionCard from "../components/PositionCard";
+import AssetDecorator from "../utils/AssetDecorator";
 
 import Firebase from '../utils/Firebase';
 
@@ -34,8 +31,7 @@ const HomeScreen = ({navigation}) => {
     var modalizeRef;
 
     function createInstance() {
-        const modalizeRef = useRef(null);
-        return modalizeRef;
+      return useRef(null);
     }
 
     return {
@@ -43,17 +39,30 @@ const HomeScreen = ({navigation}) => {
             if (!modalizeRef) {
               modalizeRef = createInstance();
             }
-            if(open == true){
+            if (open === true){
               modalizeRef.current?.open();
             }
             return modalizeRef;
-        }
+        },
+        // function to set modal closed or open
+        setInstance: function (status) {
+          if (!modalizeRef) {
+            modalizeRef = createInstance();
+          }
+          if (status === true){
+            modalizeRef.current?.open();
+          }
+          if (status === false){
+            modalizeRef.current?.close();
+          }
+          return modalizeRef;
+        },
     };
   })();
 
   const checker = async() => {
-    var assetAlreadyExist = false;
-    var indexTemp = 0;
+    let assetAlreadyExist = false;
+    let indexTemp = 0;
 
     for (var i = 0; i < holdingList.length; i++){
       if (ticker === holdingList[i].ticker){
@@ -62,7 +71,11 @@ const HomeScreen = ({navigation}) => {
         var getAssetFirebaseID = holdingList[i].assetFirebaseID;
       }
     }
+    // when updating an asset
     if (assetAlreadyExist) {
+
+      // close the modal
+      Singleton.setInstance(false);
 
       // make an async update to the holdingList
       await (async function() {
@@ -70,19 +83,17 @@ const HomeScreen = ({navigation}) => {
         const item = { ...holdingList[indexTemp] };
         item.numShare = parseInt(numShares) + parseInt(item.numShare);
         items[indexTemp] = item;
-        console.log('result =', items);
         setHoldingList(items);
       })();
-      console.log(holdingList);
-
 
       //decorate asset obj here
-      var numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
+      const numSharesUpdate = new AssetDecorator(holdingList[indexTemp], numShares);
       numSharesUpdate.decorateAsset();
 
       //update asset on Firebase
       Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
 
+      // reset form input fields
       setTicker(null);
       setNumShares(null);
       setAvgPrice(null);
@@ -91,19 +102,34 @@ const HomeScreen = ({navigation}) => {
     }
     else {
 
-      // add the new asset
-      const docID = await Firebase.handleAdd(user, ticker, numShares, avgPrice, tag);
-      console.log(docID);
+      // close the modal
+      Singleton.setInstance(false);
 
-      // search for the new asset
-      const newAsset = await Firebase.handleFetchDocument(docID);
-      console.log("NEW ASSET YEE?");
-      console.log(newAsset);
-
+      const addThis = {
+        id: Math.round(Math.random() * 100000000000),
+        userId: user.uid,
+        ticker: ticker,
+        numShare: numShares,
+        avgPrice: avgPrice,
+        tag: tag,
+      };
+      // update the holding list with the new asset
       await (async function() {
-        const newList = [...holdingList, newAsset]
-        setHoldingList(newList);
-      })();
+          const newList = [...holdingList, addThis]
+          setHoldingList(newList);
+        })();
+      // console.log(addThis);
+
+      // add the new asset
+      Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
+
+      // reset fields for add modal
+      setTicker(null);
+      setNumShares(null);
+      setAvgPrice(null);
+      setTag(null);
+      setAssetType(null);
+
     }
   };
 
@@ -135,7 +161,9 @@ const HomeScreen = ({navigation}) => {
           <FormButton buttonTitle="Add Position" onPress={() => Singleton.getInstance(true)} />
 
 
+
           <Modalize ref={Singleton.getInstance(false)} snapPoint={500}>
+
             <View style={styles.container}>
               <Text style={styles.titleText}> Add a new position </Text>
               {/* <FormInput
