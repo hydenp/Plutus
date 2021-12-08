@@ -1,14 +1,9 @@
 import React, {Component} from 'react';
-import {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, FlatList} from 'react-native';
-
+import {StyleSheet, View, Text, FlatList} from 'react-native';
 
 import HoldingCard from './HoldingCard';
 import TickerInfo from '../utils/TickerInfo';
 import formatter from '../utils/NumberFormatter';
-
-
-
 class PositionCard extends Component {
   state = {
     position: 0,
@@ -37,10 +32,7 @@ class PositionCard extends Component {
   };
 
   updatePrices = () => {
-    // console.log('trynna update prices');
-    // console.log(this.state.holdings);
     for (const key in this.state.holdings) {
-      // console.log("ticker = " + this.state.holdings[key].ticker);
       TickerInfo.getData(this.state.holdings[key].ticker)
         .then(res => {
           console.log(this.state);
@@ -91,13 +83,11 @@ class PositionCard extends Component {
           },
           () => {
             this.updatePrices();
-            // this.updatePosition();
           },
         );
         // if the list size did not change but something was updated
         // a number of shares should be updated
       } else {
-        // console.log("FUCCKKKKKKKKK");
         this.checkUpdate(props.holdingList);
       }
     } else {
@@ -114,8 +104,6 @@ class PositionCard extends Component {
 
   yourFunction = () => {
     // do whatever you like here
-
-    console.log("hello!");
     this.updatePrices();
 
     setTimeout(this.yourFunction, 5000);
@@ -166,16 +154,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25,
   },
-  // list: {
-  //   borderColor: 'black',
-  //   borderWidth: 2,
-  //   // padding: 10,
-  //   // margin: 5,
-  //   flex: 1,
-  //   // alignItems: 'center',
-  //   justifyContent: 'center',
-  //   width: '100%',
-  //   height: 'auto',
-  //   color: 'white',
-  // },
 });

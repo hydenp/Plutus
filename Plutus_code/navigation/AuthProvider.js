@@ -19,7 +19,7 @@ export const AuthProvider = ({children}) => {
                     } catch (err) {
                         console.log(err);
                         // console.log(password);
-                        if(email == undefined){
+                        if(email === undefined){
                             alert('Please enter a valid email');
                         }else{
                             alert('Wrong password.');
@@ -31,9 +31,10 @@ export const AuthProvider = ({children}) => {
                         await auth().createUserWithEmailAndPassword(email, password);
                     } catch (err) {
                         console.log(err);
-                        if(email == undefined){
+                        if (email === undefined){
                             alert('Please enter a valid email');
-                        }else{
+                        }
+                        else {
                             alert('Invalid password.');
                         }
                     }

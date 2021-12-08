@@ -1,8 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from "react";
-import { Button, Text, View } from "react-native";
-import axios from 'axios';
-
+//THIS IS AN EXAMPLE OF DECORATOR PATTERN
 class AssetDecorator {
     constructor(assetObj, addShare) {
         this.assetObj = assetObj;
@@ -14,7 +11,6 @@ class AssetDecorator {
          const numShareFLT = parseFloat(this.assetObj.numShare);
          const totalAssetIncrement = addShareFLT + numShareFLT;
          this.assetObj.numShare = totalAssetIncrement;
-         // return totalAssetIncrement;
     }
 }
 

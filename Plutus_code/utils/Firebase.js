@@ -1,10 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-
 import firestore, { firebase } from '@react-native-firebase/firestore';
-import { AuthContext } from '../navigation/AuthProvider';
-import { Alert } from "react-native";
-
 
 class Firebase {
 
@@ -21,25 +16,12 @@ class Firebase {
         avgPrice: avgPrice,
         tag: tag,
       });
-  };
+  }
 
   static async handleAdd(user, ticker, numShares, avgPrice, tag) {
     return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
       res => {
         return res.id;
-        // console.log('FROM HERE');
-        // console.log(res.id);
-        // Firebase.fetchDocument(res).then(res => {
-        //   console.log("GETTING NEW ASSET");
-        //
-        //   // const nextAsset = Firebase.createObject(res[0]);
-        //   let newAsset = null;
-        //   console.log(newAsset);
-        //   res.forEach(doc => {
-        //     newAsset = Firebase.createObject(doc);
-        //   });
-        //   return newAsset;
-        // });
       },
     );
   }
@@ -56,7 +38,6 @@ class Firebase {
       console.log('GETTING NEW ASSET');
 
       let newAsset = null;
-      // console.log(newAsset);
       res.forEach(doc => {
         newAsset = Firebase.createObject(doc);
       });
