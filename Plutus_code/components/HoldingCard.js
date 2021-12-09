@@ -1,25 +1,42 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef, createContext} from 'react';
+
 import {StyleSheet, View, Text} from 'react-native';
-import TickerInfo from '../utils/TickerInfo';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import formatter from '../utils/NumberFormatter';
+import {useNavigation} from '@react-navigation/native';
 
-const HoldingCard = ({holding, ticker, numShares}) => {
-  const [price, setPrice] = useState('-.--');
+export const assetContext = createContext();
 
-  async function updatePrice() {
-    var x = new TickerInfo(ticker);
-    await x.do();
-    setPrice(x.data.c);
-  }
+const HoldingCard = prop => {
+  const [price, setPrice] = useState(prop.data.currPrice);
+  const [shares, setShares] = useState(prop.data.numShare);
+  const navigation = useNavigation();
 
+  // OBSERVER
+  // when the change is received, we update these observers
+  // the values are then reflected in the display below
   useEffect(() => {
-    updatePrice();
-  });
+    setPrice(prop.data.currPrice);
+    setShares(prop.data.numShare);
+  }, [prop.data.currPrice, prop.data.numShare]);
 
   return (
-    <View style={styles.container}>
-      <Text>{ticker}</Text>
-      <Text>{numShares}</Text>
-      <Text>${price}</Text>
+    <View>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() =>
+          navigation.navigate('EditAsset', {
+            getTicker: prop.data.ticker,
+            getShares: shares,
+            getPrice: price,
+            getID: prop.data.assetFirebaseID,
+            getTag: prop.data.tag,
+          })
+        }>
+        <Text style={styles.holdingFont}>{prop.data.ticker}</Text>
+        <Text style={styles.holdingFont}>{shares}</Text>
+        <Text style={styles.holdingFont}>{formatter.format(price)}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -29,14 +46,27 @@ export default HoldingCard;
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    margin: 5,
+    margin: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '95%',
+    width: '90%',
     height: 50,
-    color: 'white',
-    backgroundColor: 'grey',
-    borderRadius: 5,
+    backgroundColor: '#C4C4C4',
+    borderRadius: 8,
+  },
+  holdingFont: {
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  containerModal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    paddingTop: 50,
+  },
+  titleText: {
+    paddingBottom: 20,
+    fontSize: 25,
   },
 });
