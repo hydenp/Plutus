@@ -1,55 +1,24 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
-
 import firestore, {firebase} from '@react-native-firebase/firestore';
-// import { AuthContext } from '../navigation/AuthProvider';
-// import { Alert } from "react-native";
 
 class Firebase {
   static addAssets(user, ticker, numShares, avgPrice, tag) {
-    // console.log('Got to addAssets func');
-    // console.log('Ticker' + ticker);
-    // console.log('Num shares' + numShares);
-    // console.log('Avg Price' + avgPrice);
-    // console.log('Tag' + tag);
     firestore().collection('assets').add({
       userId: user.uid,
       ticker: ticker,
-        numShare: numShares,
-        avgPrice: avgPrice,
-        tag: tag,
-      });
-  };
+      numShare: numShares,
+      avgPrice: avgPrice,
+      tag: tag,
+    });
+  }
 
   static async handleAdd(user, ticker, numShares, avgPrice, tag) {
     return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
       res => {
         return res.id;
-        // console.log('FROM HERE');
-        // console.log(res.id);
-        // Firebase.fetchDocument(res).then(res => {
-        //   console.log("GETTING NEW ASSET");
-        //
-        //   // const nextAsset = Firebase.createObject(res[0]);
-        //   let newAsset = null;
-        //   console.log(newAsset);
-        //   res.forEach(doc => {
-        //     newAsset = Firebase.createObject(doc);
-        //   });
-        //   return newAsset;
-        // });
       },
     );
-
   }
-
-  // static async handleAdd(user, ticker, numShares, avgPrice, tag) {
-  //   return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
-  //     res => {
-  //       return res.id;
-  //     },
-  //   );
-  // }
 
   static fetchData(user) {
     return firestore()
@@ -64,7 +33,6 @@ class Firebase {
       res.forEach(doc => {
         newAsset = Firebase.createObject(doc);
       });
-      // console.log(newAsset);
       return newAsset;
     });
   }
@@ -89,43 +57,38 @@ class Firebase {
   }
 
   static editAsset(assetFirebaseID, changeNumSharesVal, changeTagVal) {
-    if (changeNumSharesVal != null){
+    if (changeNumSharesVal != null) {
       firestore()
-      .collection('assets')
-      .doc(assetFirebaseID)
-      .update({
-        numShare: changeNumSharesVal,
-      })
-      .then(() => {
-        console.log('Asset updated correctly');
-      });
+        .collection('assets')
+        .doc(assetFirebaseID)
+        .update({
+          numShare: changeNumSharesVal,
+        })
+        .then(() => {
+          console.log('Asset updated correctly');
+        });
     }
-    if (changeTagVal != null){
+    if (changeTagVal != null) {
       firestore()
-      .collection('assets')
-      .doc(assetFirebaseID)
-      .update({
-        tag: changeTagVal,
-      })
-      .then(() => {
-        console.log('Asset updated correctly');
-      });
+        .collection('assets')
+        .doc(assetFirebaseID)
+        .update({
+          tag: changeTagVal,
+        })
+        .then(() => {
+          console.log('Asset updated correctly');
+        })
+        .catch(error => {
+          console.log('Error updating assets');
+        });
     }
-    else {
-      console.log('Error uopdating assets');
-    }
-
   }
 
   static deleteAsset(assetFirebaseID) {
-    if (assetFirebaseID == null){
+    if (assetFirebaseID == null) {
       console.log('Error: asset id not found');
-    }
-    else {
-      firestore()
-      .collection('assets')
-      .doc(assetFirebaseID)
-      .delete();
+    } else {
+      firestore().collection('assets').doc(assetFirebaseID).delete();
     }
   }
 

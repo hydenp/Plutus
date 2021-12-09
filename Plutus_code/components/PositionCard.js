@@ -1,13 +1,9 @@
 import React, {Component} from 'react';
-import {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, FlatList} from 'react-native';
-
+import {StyleSheet, View, Text, FlatList} from 'react-native';
 
 import HoldingCard from './HoldingCard';
 import TickerInfo from '../utils/TickerInfo';
 import formatter from '../utils/NumberFormatter';
-
-
 
 class PositionCard extends Component {
   state = {
@@ -37,13 +33,9 @@ class PositionCard extends Component {
   };
 
   updatePrices = () => {
-    // console.log('trynna update prices');
-    // console.log(this.state.holdings);
     for (const key in this.state.holdings) {
-      // console.log("ticker = " + this.state.holdings[key].ticker);
       TickerInfo.getData(this.state.holdings[key].ticker)
         .then(res => {
-          // console.log(this.state);
           let items = [...this.state.holdings];
           let item = {...items[key]};
           item.currPrice = res.data.c;
@@ -62,7 +54,6 @@ class PositionCard extends Component {
         this.state.holdings[key].numShare !== newList[key].numShare ||
         this.state.holdings[key].avgPrice !== newList[key].avgPrice
       ) {
-        console.log('updating something');
         let items = [...this.state.holdings];
         let updatedItem = {...this.state.holdings[key]};
         updatedItem.numShare = newList[key].numShare;
@@ -80,11 +71,14 @@ class PositionCard extends Component {
     }
   };
 
+  // OBSERVER
+  // this React hook listens for changes to the props
+  // when changes are made, this function updates
+  // when that happens, all child HoldingCards update their values
   componentDidUpdate = props => {
-    // console.log('hello from update');
-    // console.log(props.holdingList);
     if (this.state.holdings !== null) {
       if (this.state.holdings.length !== props.holdingList.length) {
+        // eslint-disable-next-line react/no-did-update-set-state
         this.setState(
           {
             holdings: props.holdingList,
@@ -100,6 +94,7 @@ class PositionCard extends Component {
         this.checkUpdate(props.holdingList);
       }
     } else {
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState(
         {
           holdings: props.holdingList,
@@ -123,7 +118,7 @@ class PositionCard extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.position}>
-          <Text style={styles.positionFont}>Hi Hyden  </Text>
+          <Text style={styles.positionFont}>Hi Hyden </Text>
           <Text style={styles.positionFont}>
             {formatter.format(this.state.position)}
           </Text>
