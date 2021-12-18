@@ -1,5 +1,11 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TextInputField,
+} from 'react-native';
 import {Modalize} from 'react-native-modalize';
 
 import FormInput from '../components/FormInput';
@@ -18,10 +24,12 @@ const HomeScreen = () => {
   const [avgPrice, setAvgPrice] = useState(null);
   const [tag, setTag] = useState(null);
 
-  // Stores the list of Holdings
-  // OBSERVER
-  // changes in this list are automatically updating in the PositionCard
-  const [holdingList, setHoldingList] = useState([]);
+  const [newHolding, setNewHolding] = useState({
+    ticker: null,
+    numShares: null,
+    avgPrice: null,
+    tag: null,
+  });
 
   var Singleton = (function () {
     let modalizeRef;
@@ -57,92 +65,105 @@ const HomeScreen = () => {
     };
   })();
 
-  const checker = async () => {
-    let assetAlreadyExist = false;
-    let indexTemp = 0;
-
-    let i;
-    for (i = 0; i < holdingList.length; i++) {
-      if (ticker === holdingList[i].ticker) {
-        assetAlreadyExist = true;
-        indexTemp = i;
-        var getAssetFirebaseID = holdingList[i].assetFirebaseID;
-      }
-    }
-    // when updating an asset
-    if (assetAlreadyExist) {
-      // close the modal
-      Singleton.setInstance(false);
-
-      // make an async update to the holdingList
-      await (async function () {
-        const items = [...holdingList];
-        const item = {...holdingList[indexTemp]};
-        item.numShare = parseInt(numShares) + parseInt(item.numShare);
-        items[indexTemp] = item;
-        setHoldingList(items);
-      })();
-
-      // decorate asset obj here
-      // DECORATOR
-      const numSharesUpdate = new AssetDecorator(
-        holdingList[indexTemp],
-        numShares,
-      );
-      numSharesUpdate.decorateAsset();
-
-      // update asset on Firebase
-      Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
-
-      // reset form input fields
-      setTicker(null);
-      setNumShares(null);
-      setAvgPrice(null);
-      setTag(null);
-    } else {
-      // close the modal
-      Singleton.setInstance(false);
-
-      const addThis = {
-        id: Math.round(Math.random() * 100000000000),
-        userId: user.uid,
-        ticker: ticker,
-        numShare: numShares,
-        avgPrice: avgPrice,
-        tag: tag,
-      };
-      // update the holding list with the new asset
-      await (async function () {
-        const newList = [...holdingList, addThis];
-        setHoldingList(newList);
-      })();
-
-      // add the new asset
-      Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
-
-      // reset fields for add modal
-      setTicker(null);
-      setNumShares(null);
-      setAvgPrice(null);
-      setTag(null);
-    }
+  const addPosition = () => {
+    console.log('hi hyden');
+    console.log(newHolding);
   };
 
-  useEffect(() => {
-    Firebase.fetchData(user).then(querySnapshot => {
-      const list = [];
-      querySnapshot.forEach(doc => {
-        const nextAsset = Firebase.createObject(doc);
-        list.push(nextAsset);
-      });
-      setHoldingList(list);
+  // const checker = async () => {
+  //   let assetAlreadyExist = false;
+  //   let indexTemp = 0;
+  //
+  //   let i;
+  //   for (i = 0; i < holdingList.length; i++) {
+  //     if (ticker === holdingList[i].ticker) {
+  //       assetAlreadyExist = true;
+  //       indexTemp = i;
+  //       var getAssetFirebaseID = holdingList[i].assetFirebaseID;
+  //     }
+  //   }
+  //   // when updating an asset
+  //   if (assetAlreadyExist) {
+  //     // close the modal
+  //     Singleton.setInstance(false);
+  //
+  //     // make an async update to the holdingList
+  //     await (async function () {
+  //       const items = [...holdingList];
+  //       const item = {...holdingList[indexTemp]};
+  //       item.numShare = parseInt(numShares) + parseInt(item.numShare);
+  //       items[indexTemp] = item;
+  //       setHoldingList(items);
+  //     })();
+  //
+  //     // decorate asset obj here
+  //     // DECORATOR
+  //     const numSharesUpdate = new AssetDecorator(
+  //       holdingList[indexTemp],
+  //       numShares,
+  //     );
+  //     numSharesUpdate.decorateAsset();
+  //
+  //     // update asset on Firebase
+  //     Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
+  //
+  //     // reset form input fields
+  //     setTicker(null);
+  //     setNumShares(null);
+  //     setAvgPrice(null);
+  //     setTag(null);
+  //   } else {
+  //     // close the modal
+  //     Singleton.setInstance(false);
+  //
+  //     const addThis = {
+  //       id: Math.round(Math.random() * 100000000000),
+  //       userId: user.uid,
+  //       ticker: ticker,
+  //       numShare: numShares,
+  //       avgPrice: avgPrice,
+  //       tag: tag,
+  //     };
+  //     // update the holding list with the new asset
+  //     await (async function () {
+  //       const newList = [...holdingList, addThis];
+  //       setHoldingList(newList);
+  //     })();
+  //
+  //     // add the new asset
+  //     Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
+  //
+  //     // reset fields for add modal
+  //     setTicker(null);
+  //     setNumShares(null);
+  //     setAvgPrice(null);
+  //     setTag(null);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   Firebase.fetchData(user).then(querySnapshot => {
+  //     const list = [];
+  //     querySnapshot.forEach(doc => {
+  //       const nextAsset = Firebase.createObject(doc);
+  //       list.push(nextAsset);
+  //     });
+  //     setHoldingList(list);
+  //   });
+  // }, [user]);
+
+  const onFieldChange = e => {
+    const {name, value} = e;
+    const newState = Object.assign({}, newHolding, {
+      [name]: value.toUpperCase(),
     });
-  }, [user]);
+    setNewHolding(newState);
+  };
 
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <PositionCard holdingList={holdingList} />
+        <PositionCard user={user} />
 
         <FormButton
           buttonTitle="Add Position"
@@ -153,32 +174,32 @@ const HomeScreen = () => {
           <View style={styles.container}>
             <Text style={styles.titleText}> Add a new position </Text>
             <FormInput
-              value={ticker}
-              onChangeText={ticekerValue => setTicker(ticekerValue)}
+              value={newHolding.ticker}
+              onChangeText={value => onFieldChange({name: 'ticker', value})}
               placeholder="Ticker"
               autoCorrect={false}
             />
             <FormInput
-              labelValue={numShares}
-              onChangeText={numSharesValue => setNumShares(numSharesValue)}
-              placeholder="# of Shares"
+              value={newHolding.numShares}
+              onChangeText={value => onFieldChange({name: 'numShares', value})}
+              placeholder="Number of Shares"
               autoCorrect={false}
               keyBoardType="numeric"
             />
             <FormInput
-              labelValue={avgPrice}
-              onChangeText={avgPriceValue => setAvgPrice(avgPriceValue)}
+              value={newHolding.avgPrice}
+              onChangeText={value => onFieldChange({name: 'avgPrice', value})}
               placeholder="Average Price"
               autoCorrect={false}
               keyBoardType="numeric"
             />
             <FormInput
-              labelValue={tag}
-              onChangeText={tagValue => setTag(tagValue)}
+              value={newHolding.tag}
+              onChangeText={value => onFieldChange({name: 'tag', value})}
               placeholder="Tag"
               autoCorrect={false}
             />
-            <FormButton buttonTitle="Save" onPress={checker} />
+            <FormButton buttonTitle="Save" onPress={addPosition} />
           </View>
         </Modalize>
         <FormButton buttonTitle="Logout" onPress={() => logout()} />
