@@ -26,8 +26,8 @@ const PositionCard = ({newHolding, resetFields}) => {
       alert(
         'You already have this Ticker. You can edit your holding by tapping it',
       );
+      resetFields();
     } else {
-      console.log(newHolding.submit);
       // make sure fields not blank
       if (newHolding.submit) {
         console.log('adding new asset');

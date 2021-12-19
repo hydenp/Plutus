@@ -15,7 +15,7 @@ const HomeScreen = () => {
   const [newHolding, setNewHolding] = useState({
     ticker: null,
     numShares: null,
-    avgPrice: 0.0,
+    avgPrice: null,
     tag: null,
     submit: false,
   });
