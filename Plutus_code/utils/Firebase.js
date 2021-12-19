@@ -2,8 +2,9 @@ import React from 'react';
 import firestore, {firebase} from '@react-native-firebase/firestore';
 
 class Firebase {
-  static addAssets(user, ticker, numShares, avgPrice, tag) {
-    firestore().collection('assets').add({
+  // add a new asset to firebase
+  static addAssets(user, {ticker, numShares, avgPrice, tag}) {
+    return firestore().collection('assets').add({
       userId: user.uid,
       ticker: ticker,
       numShare: numShares,
@@ -12,13 +13,13 @@ class Firebase {
     });
   }
 
-  static async handleAdd(user, ticker, numShares, avgPrice, tag) {
-    return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
-      res => {
-        return res.id;
-      },
-    );
-  }
+  // static async handleAdd(user, ticker, numShares, avgPrice, tag) {
+  //   return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
+  //     res => {
+  //       return res.id;
+  //     },
+  //   );
+  // }
 
   static fetchData(user) {
     return firestore()
@@ -95,29 +96,17 @@ class Firebase {
   static createObject(doc) {
     const key = Math.round(Math.random() * 100000000000);
     // parse the doc object data
-    const {
-      ticker,
-      numShare,
-      avgPrice,
-      tag,
-      userId,
-      uniqueID,
-      assetType,
-      assetFirebaseID,
-    } = doc.data();
+    const {ticker, numShare, avgPrice, tag, userId} = doc.data();
 
     // create the new object to add to the list
     return {
       id: key,
       ticker: ticker,
-      numShare: numShare,
+      numShares: numShare,
       avgPrice: avgPrice,
-      currPrice: '--.--',
+      currPrice: 0.0,
       tag: tag,
       userId: userId,
-      uniqueID: uniqueID,
-      assetType: assetType,
-      assetFirebaseID: doc.id,
     };
   }
 }

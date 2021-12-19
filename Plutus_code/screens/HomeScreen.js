@@ -1,11 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  TextInputField,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {Modalize} from 'react-native-modalize';
 
 import FormInput from '../components/FormInput';
@@ -13,61 +7,30 @@ import FormButton from '../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
 
 import PositionCard from '../components/PositionCard';
-import AssetDecorator from '../utils/AssetDecorator';
-import Firebase from '../utils/Firebase';
 
 const HomeScreen = () => {
   const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
-
-  const [ticker, setTicker] = useState(null);
-  const [numShares, setNumShares] = useState(null);
-  const [avgPrice, setAvgPrice] = useState(null);
-  const [tag, setTag] = useState(null);
+  const modalizeState = useRef(null);
 
   const [newHolding, setNewHolding] = useState({
     ticker: null,
     numShares: null,
-    avgPrice: null,
+    avgPrice: 0.0,
     tag: null,
+    submit: false,
   });
 
-  var Singleton = (function () {
-    let modalizeRef;
-
-    function createInstance() {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useRef(null);
-    }
-
-    return {
-      getInstance: function (open) {
-        if (!modalizeRef) {
-          modalizeRef = createInstance();
-        }
-        if (open === true) {
-          modalizeRef.current?.open();
-        }
-        return modalizeRef;
-      },
-      // function to set modal closed or open
-      setInstance: function (status) {
-        if (!modalizeRef) {
-          modalizeRef = createInstance();
-        }
-        if (status === true) {
-          modalizeRef.current?.open();
-        }
-        if (status === false) {
-          modalizeRef.current?.close();
-        }
-        return modalizeRef;
-      },
-    };
-  })();
-
   const addPosition = () => {
-    console.log('hi hyden');
-    console.log(newHolding);
+    if (newHolding.ticker && newHolding.numShares) {
+      const newState = Object.assign({}, newHolding, {
+        ['submit']: true,
+        ['id']: Math.round(Math.random() * 100000000000),
+      });
+      setNewHolding(newState);
+      modalizeState.current?.close();
+    } else {
+      alert('Please provide a Ticker and the Number of Shares');
+    }
   };
 
   // const checker = async () => {
@@ -160,17 +123,35 @@ const HomeScreen = () => {
     setNewHolding(newState);
   };
 
+  const resetFields = () => {
+    setNewHolding({
+      ticker: null,
+      numShares: null,
+      avgPrice: null,
+      tag: null,
+      submit: false,
+    });
+  };
+
+  // useEffect(() => {
+  //   console.log(modalizeState.current);
+  // }, [modalizeState]);
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <PositionCard user={user} />
+        <PositionCard
+          user={user}
+          newHolding={newHolding}
+          resetFields={resetFields}
+        />
 
         <FormButton
           buttonTitle="Add Position"
-          onPress={() => Singleton.getInstance(true)}
+          onPress={() => modalizeState.current?.open()}
         />
 
-        <Modalize ref={Singleton.getInstance(false)} snapPoint={500}>
+        <Modalize ref={modalizeState} snapPoint={500}>
           <View style={styles.container}>
             <Text style={styles.titleText}> Add a new position </Text>
             <FormInput

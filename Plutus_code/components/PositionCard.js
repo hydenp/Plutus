@@ -7,11 +7,46 @@ import formatter from '../utils/NumberFormatter';
 import {AuthContext} from '../navigation/AuthProvider';
 import Firebase from '../utils/Firebase';
 
-const PositionCard = () => {
+const PositionCard = ({newHolding, resetFields}) => {
   const {user, logout} = useContext(AuthContext);
   const [holdingList, setHoldingList] = useState([]);
   const [position, setPosition] = useState(0.0);
 
+  // when new asset is added
+  useEffect(() => {
+    let duplicate = false;
+    for (const key in holdingList) {
+      if (holdingList[key].ticker === newHolding.ticker) {
+        duplicate = true;
+      }
+    }
+
+    if (duplicate) {
+      // notify the user holding already exists
+      alert(
+        'You already have this Ticker. You can edit your holding by tapping it',
+      );
+    } else {
+      console.log(newHolding.submit);
+      // make sure fields not blank
+      if (newHolding.submit) {
+        console.log('adding new asset');
+
+        // add to the holding list
+        setHoldingList([...holdingList, newHolding]);
+        resetFields();
+
+        Firebase.addAssets(user, newHolding)
+          .then(console.log('asset successfully added to firebase'))
+          .catch(e => {
+            console.log('failed to add asset with error: ' + e);
+          });
+      }
+    }
+  }, [newHolding.submit]);
+
+  // load list on component mount
+  // empty dependency array
   useEffect(() => {
     Firebase.fetchData(user).then(querySnapshot => {
       const list = [];
@@ -20,104 +55,41 @@ const PositionCard = () => {
         list.push(nextAsset);
       });
       setHoldingList(list);
-      console.log(holdingList);
     });
-  }, [user]);
+  }, []);
 
-  // updatePosition = () => {
-  //   let sum = 0;
-  //   for (const key in this.state.holdings) {
-  //     if (typeof this.state.holdings[key].currPrice === 'number') {
-  //       sum +=
-  //         this.state.holdings[key].currPrice *
-  //         // eslint-disable-next-line radix
-  //         parseInt(this.state.holdings[key].numShare);
-  //     }
-  //   }
-  //   this.setState({
-  //     position: sum,
-  //   });
-  // };
+  const updatePosition = () => {
+    let sum = 0;
+    for (const key in holdingList) {
+      // if (typeof holdingList[key].currPrice === 'number') {
+      sum +=
+        holdingList[key].currPrice *
+        // eslint-disable-next-line radix
+        parseInt(holdingList[key].numShare);
+      // }
+    }
+    setPosition(sum);
+  };
 
-  // updatePrices = () => {
-  //   for (const key in this.state.holdings) {
-  //     TickerInfo.getData(this.state.holdings[key].ticker)
-  //       .then(res => {
-  //         let items = [...this.state.holdings];
-  //         let item = {...items[key]};
-  //         item.currPrice = res.data.c;
-  //         items[key] = item;
-  //         this.setState({holdings: items}, () => this.updatePosition());
-  //       })
-  //       .catch(error => {
-  //         console.log('price call failed with: ' + error);
-  //       });
-  //   }
-  // };
+  const updatePrices = () => {
+    for (const key in holdingList) {
+      TickerInfo.getData(holdingList[key].ticker)
+        .then(res => {
+          let items = [...holdingList];
+          let item = items[key];
+          item.currPrice = res.data.c;
+          items[key] = item;
+          setHoldingList(items);
+        })
+        .catch(error => {
+          console.log('price call failed with: ' + error);
+        });
+    }
+  };
 
-  // checkUpdate = newList => {
-  //   for (const key in this.state.holdings) {
-  //     if (
-  //       this.state.holdings[key].numShare !== newList[key].numShare ||
-  //       this.state.holdings[key].avgPrice !== newList[key].avgPrice
-  //     ) {
-  //       let items = [...this.state.holdings];
-  //       let updatedItem = {...this.state.holdings[key]};
-  //       updatedItem.numShare = newList[key].numShare;
-  //       updatedItem.avgPrice = newList[key].avgPrice;
-  //       items[key] = updatedItem;
-  //       this.setState(
-  //         {
-  //           holdings: items,
-  //         },
-  //         () => {
-  //           this.updatePosition();
-  //         },
-  //       );
-  //     }
-  //   }
-  // };
-
-  // OBSERVER
-  // this React hook listens for changes to the props
-  // when changes are made, this function updates
-  // when that happens, all child HoldingCards update their values
-  // componentDidUpdate = props => {
-  //   if (this.state.holdings !== null) {
-  //     if (this.state.holdings.length !== props.holdingList.length) {
-  //       // eslint-disable-next-line react/no-did-update-set-state
-  //       this.setState(
-  //         {
-  //           holdings: props.holdingList,
-  //         },
-  //         () => {
-  //           this.updatePrices();
-  //           // this.updatePosition();
-  //         },
-  //       );
-  //       // if the list size did not change but something was updated
-  //       // a number of shares should be updated
-  //     } else {
-  //       this.checkUpdate(props.holdingList);
-  //     }
-  //   } else {
-  //     // eslint-disable-next-line react/no-did-update-set-state
-  //     this.setState(
-  //       {
-  //         holdings: props.holdingList,
-  //       },
-  //       () => {
-  //         this.updatePrices();
-  //       },
-  //     );
-  //   }
-  // };
-  //
-  // // function to call update prices every 15 seconds
-  // yourFunction = () => {
-  //   this.updatePrices();
-  //   setTimeout(this.yourFunction, 15000);
-  // };
+  useEffect(() => {
+    updatePrices();
+  }, [holdingList.length]);
 
   const renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
 

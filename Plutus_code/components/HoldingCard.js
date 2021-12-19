@@ -9,7 +9,7 @@ export const assetContext = createContext();
 
 const HoldingCard = prop => {
   const [price, setPrice] = useState(prop.data.currPrice);
-  const [shares, setShares] = useState(prop.data.numShare);
+  const [shares, setShares] = useState(prop.data.numShares);
   const navigation = useNavigation();
 
   // OBSERVER
@@ -17,8 +17,8 @@ const HoldingCard = prop => {
   // the values are then reflected in the display below
   useEffect(() => {
     setPrice(prop.data.currPrice);
-    setShares(prop.data.numShare);
-  }, [prop.data.currPrice, prop.data.numShare]);
+    setShares(prop.data.numShares);
+  }, [prop.data.currPrice, prop.data.numShares]);
 
   return (
     <View>

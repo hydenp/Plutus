@@ -8,11 +8,6 @@ class TickerInfo {
       url: `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${api_key}`,
     });
   }
-
-  static async do(symbol) {
-    const res = await this.getData(symbol);
-    return res.data;
-  }
 }
 
 export default TickerInfo;
