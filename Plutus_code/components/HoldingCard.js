@@ -16,6 +16,7 @@ const HoldingCard = prop => {
   // when the change is received, we update these observers
   // the values are then reflected in the display below
   useEffect(() => {
+    console.log(prop);
     setPrice(prop.data.currPrice);
     setShares(prop.data.numShares);
   }, [prop.data.currPrice, prop.data.numShares]);
@@ -26,11 +27,10 @@ const HoldingCard = prop => {
         style={styles.container}
         onPress={() =>
           navigation.navigate('EditAsset', {
-            getTicker: prop.data.ticker,
-            getShares: shares,
-            getPrice: price,
-            getID: prop.data.assetFirebaseID,
-            getTag: prop.data.tag,
+            ticker: prop.data.ticker,
+            numShares: prop.data.numShares,
+            price: price,
+            tag: prop.data.tag,
           })
         }>
         <Text style={styles.holdingFont}>{prop.data.ticker}</Text>

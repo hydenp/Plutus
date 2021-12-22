@@ -13,14 +13,6 @@ class Firebase {
     });
   }
 
-  // static async handleAdd(user, ticker, numShares, avgPrice, tag) {
-  //   return Firebase.addAssets(user, ticker, numShares, avgPrice, tag).then(
-  //     res => {
-  //       return res.id;
-  //     },
-  //   );
-  // }
-
   static fetchData(user) {
     return firestore()
       .collection('assets')
@@ -85,12 +77,28 @@ class Firebase {
     }
   }
 
-  static deleteAsset(assetFirebaseID) {
-    if (assetFirebaseID == null) {
-      console.log('Error: asset id not found');
-    } else {
-      firestore().collection('assets').doc(assetFirebaseID).delete();
-    }
+  // static deleteAsset(assetFirebaseID) {
+  //   if (assetFirebaseID == null) {
+  //     console.log('Error: asset id not found');
+  //   } else {
+  //     firestore().collection('assets').doc(assetFirebaseID).delete();
+  //   }
+  // }
+
+  static deleteAsset(ticker, userID) {
+    const doc_query = firestore()
+      .collection('assets')
+      .where('ticker', '==', ticker, 'userID', '==', userID);
+    doc_query.get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        doc.ref
+          .delete()
+          .then(console.log('asset successfully deleted'))
+          .catch(e => {
+            console.log('delete asset failed with' + e);
+          });
+      });
+    });
   }
 
   static createObject(doc) {

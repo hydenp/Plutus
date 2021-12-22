@@ -7,10 +7,21 @@ import formatter from '../utils/NumberFormatter';
 import {AuthContext} from '../navigation/AuthProvider';
 import Firebase from '../utils/Firebase';
 
-const PositionCard = ({newHolding, resetFields}) => {
+const PositionCard = ({newHolding, resetFields, deletion}) => {
   const {user, logout} = useContext(AuthContext);
   const [holdingList, setHoldingList] = useState([]);
   const [position, setPosition] = useState(0.0);
+
+  const findTicker = ticker => {
+    for (const key in holdingList) {
+      console.log(holdingList[key].ticker);
+      console.log(key);
+      if (holdingList[key].ticker === ticker) {
+        return key;
+      }
+    }
+    return -1;
+  };
 
   // when new asset is added
   useEffect(() => {
@@ -58,15 +69,31 @@ const PositionCard = ({newHolding, resetFields}) => {
     });
   }, []);
 
+  const handleDelete = (userID, ticker) => {
+    const idx = findTicker(ticker);
+    const newList = holdingList.splice(idx, 1);
+    setHoldingList(newList);
+  };
+
+  // watch for deletion prompt
+  useEffect(() => {
+    const {resetDelete, tickerToDelete} = deletion;
+    if (tickerToDelete != null) {
+      const index = findTicker(tickerToDelete);
+      let currHoldings = [...holdingList];
+      currHoldings.splice(index, 1);
+      setHoldingList(currHoldings);
+      resetDelete();
+    }
+  }, [deletion.tickerToDelete]);
+
   const updatePosition = () => {
     let sum = 0;
     for (const key in holdingList) {
-      // if (typeof holdingList[key].currPrice === 'number') {
       sum +=
         holdingList[key].currPrice *
         // eslint-disable-next-line radix
         parseInt(holdingList[key].numShare);
-      // }
     }
     setPosition(sum);
   };
@@ -91,7 +118,9 @@ const PositionCard = ({newHolding, resetFields}) => {
     updatePrices();
   }, [holdingList.length]);
 
-  const renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
+  const renderItem = ({item}) => (
+    <HoldingCard key={item.id} data={item} handleDelete={handleDelete} />
+  );
 
   return (
     <View style={styles.container}>

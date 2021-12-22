@@ -7,11 +7,13 @@ import FormButton from '../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
 
 import PositionCard from '../components/PositionCard';
+import Firebase from '../utils/Firebase';
 
-const HomeScreen = () => {
+const HomeScreen = ({route}) => {
   const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
   const modalizeState = useRef(null);
 
+  const [tickerToDelete, setTickerToDelete] = useState(null);
   const [newHolding, setNewHolding] = useState({
     ticker: null,
     numShares: null,
@@ -33,87 +35,21 @@ const HomeScreen = () => {
     }
   };
 
-  // const checker = async () => {
-  //   let assetAlreadyExist = false;
-  //   let indexTemp = 0;
-  //
-  //   let i;
-  //   for (i = 0; i < holdingList.length; i++) {
-  //     if (ticker === holdingList[i].ticker) {
-  //       assetAlreadyExist = true;
-  //       indexTemp = i;
-  //       var getAssetFirebaseID = holdingList[i].assetFirebaseID;
-  //     }
-  //   }
-  //   // when updating an asset
-  //   if (assetAlreadyExist) {
-  //     // close the modal
-  //     Singleton.setInstance(false);
-  //
-  //     // make an async update to the holdingList
-  //     await (async function () {
-  //       const items = [...holdingList];
-  //       const item = {...holdingList[indexTemp]};
-  //       item.numShare = parseInt(numShares) + parseInt(item.numShare);
-  //       items[indexTemp] = item;
-  //       setHoldingList(items);
-  //     })();
-  //
-  //     // decorate asset obj here
-  //     // DECORATOR
-  //     const numSharesUpdate = new AssetDecorator(
-  //       holdingList[indexTemp],
-  //       numShares,
-  //     );
-  //     numSharesUpdate.decorateAsset();
-  //
-  //     // update asset on Firebase
-  //     Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
-  //
-  //     // reset form input fields
-  //     setTicker(null);
-  //     setNumShares(null);
-  //     setAvgPrice(null);
-  //     setTag(null);
-  //   } else {
-  //     // close the modal
-  //     Singleton.setInstance(false);
-  //
-  //     const addThis = {
-  //       id: Math.round(Math.random() * 100000000000),
-  //       userId: user.uid,
-  //       ticker: ticker,
-  //       numShare: numShares,
-  //       avgPrice: avgPrice,
-  //       tag: tag,
-  //     };
-  //     // update the holding list with the new asset
-  //     await (async function () {
-  //       const newList = [...holdingList, addThis];
-  //       setHoldingList(newList);
-  //     })();
-  //
-  //     // add the new asset
-  //     Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
-  //
-  //     // reset fields for add modal
-  //     setTicker(null);
-  //     setNumShares(null);
-  //     setAvgPrice(null);
-  //     setTag(null);
-  //   }
-  // };
+  const resetDelete = () => {
+    setTickerToDelete(null);
+  };
 
-  // useEffect(() => {
-  //   Firebase.fetchData(user).then(querySnapshot => {
-  //     const list = [];
-  //     querySnapshot.forEach(doc => {
-  //       const nextAsset = Firebase.createObject(doc);
-  //       list.push(nextAsset);
-  //     });
-  //     setHoldingList(list);
-  //   });
-  // }, [user]);
+  useEffect(() => {
+    if (typeof route.params !== 'undefined') {
+      // the variable is defined, check if it has ticker
+      if (route.params.hasOwnProperty('ticker')) {
+        Firebase.deleteAsset(route.params.ticker, user.uid);
+
+        // set ticker delete for position card so its removed from list
+        setTickerToDelete(route.params.ticker);
+      }
+    }
+  }, [route]);
 
   const onFieldChange = e => {
     const {name, value} = e;
@@ -133,15 +69,15 @@ const HomeScreen = () => {
     });
   };
 
-  // useEffect(() => {
-  //   console.log(modalizeState.current);
-  // }, [modalizeState]);
-
   return (
     <SafeAreaView>
       <View style={styles.container}>
         <PositionCard
           user={user}
+          deletion={{
+            resetDelete: resetDelete,
+            tickerToDelete: tickerToDelete,
+          }}
           newHolding={newHolding}
           resetFields={resetFields}
         />

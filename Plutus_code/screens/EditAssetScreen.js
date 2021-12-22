@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
@@ -7,30 +7,39 @@ import FormButton from '../components/FormButton';
 
 import Firebase from '../utils/Firebase';
 import formatter from '../utils/NumberFormatter';
+import {AuthContext} from '../navigation/AuthProvider';
 
-const EditAssetScreen = ({route}) => {
+const EditAssetScreen = ({route, handleDelete}) => {
   const navigation = useNavigation();
 
-  const {getTicker, getShares, getPrice, getID, getTag} = route.params;
+  const {user, logout} = useContext(AuthContext);
+
+  const {ticker, numShares, price, tag} = route.params;
 
   const [updateNumShare, setUpdateNumShare] = useState(null);
   const [updateTag, setUpdateTag] = useState(null);
-  const totalValue = getShares * getPrice;
+  const totalValue = numShares * price;
+
+  useEffect(() => {
+    console.log('*****************************************');
+    console.log(ticker);
+    console.log(handleDelete);
+  });
 
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <Text style={styles.titleText}> {getTicker} </Text>
+        <Text style={styles.titleText}> {ticker} </Text>
         <Text style={styles.mktValueText}>
           {' '}
           Market Value: {formatter.format(totalValue)}{' '}
         </Text>
-        <Text style={styles.bodyText}> Number shares: {getShares} </Text>
+        <Text style={styles.bodyText}> Number shares: {numShares} </Text>
         <Text style={styles.bodyText}>
           {' '}
-          Current Price: {formatter.format(getPrice)}{' '}
+          Current Price: {formatter.format(price)}{' '}
         </Text>
-        <Text style={styles.bodyText}> Tag: {getTag} </Text>
+        <Text style={styles.bodyText}> Tag: {tag} </Text>
         <FormInput
           labelValue={updateNumShare}
           onChangeText={updateNumShareValue =>
@@ -48,15 +57,17 @@ const EditAssetScreen = ({route}) => {
         <FormButton
           buttonTitle="Save"
           onPress={() => {
-            Firebase.editAsset(getID, updateNumShare, updateTag);
+            // Firebase.editAsset(getID, updateNumShare, updateTag);
             navigation.navigate('Plutus');
           }}
         />
         <FormButton
           buttonTitle="Delete Asset"
           onPress={() => {
-            Firebase.deleteAsset(getID);
-            navigation.navigate('Plutus');
+            // Firebase.deleteAsset(getID);
+            navigation.navigate('Plutus', {
+              ticker: ticker,
+            });
           }}
         />
       </View>
