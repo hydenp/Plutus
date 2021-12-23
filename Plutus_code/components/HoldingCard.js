@@ -29,6 +29,7 @@ const HoldingCard = prop => {
           navigation.navigate('EditAsset', {
             ticker: prop.data.ticker,
             numShares: prop.data.numShares,
+            avgPrice: prop.data.avgPrice,
             price: price,
             tag: prop.data.tag,
           })

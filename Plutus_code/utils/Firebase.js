@@ -7,7 +7,7 @@ class Firebase {
     return firestore().collection('assets').add({
       userId: user.uid,
       ticker: ticker,
-      numShare: numShares,
+      numShares: numShares,
       avgPrice: avgPrice,
       tag: tag,
     });
@@ -20,62 +20,66 @@ class Firebase {
       .get();
   }
 
-  static async handleFetchDocument(docID) {
-    return Firebase.fetchDocument(docID).then(res => {
-      let newAsset = null;
-      res.forEach(doc => {
-        newAsset = Firebase.createObject(doc);
+  // static async handleFetchDocument(docID) {
+  //   return Firebase.fetchDocument(docID).then(res => {
+  //     let newAsset = null;
+  //     res.forEach(doc => {
+  //       newAsset = Firebase.createObject(doc);
+  //     });
+  //     return newAsset;
+  //   });
+  // }
+
+  // static async fetchDocument(docID) {
+  //   return firestore()
+  //     .collection('assets')
+  //     .where(firebase.firestore.FieldPath.documentId(), '==', docID)
+  //     .get();
+  // }
+
+  static updateAsset(user, ticker, updates) {
+    const doc_query = firestore()
+      .collection('assets')
+      .where('ticker', '==', ticker, 'userID', '==', user.uid);
+    doc_query.get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        doc.ref
+          .update(updates)
+          // .then(console.log('asset successfully updated'))
+          .catch(e => {
+            console.log('update failed with' + e);
+          });
       });
-      return newAsset;
     });
   }
 
-  static async fetchDocument(docID) {
-    return firestore()
-      .collection('assets')
-      .where(firebase.firestore.FieldPath.documentId(), '==', docID)
-      .get();
-  }
-
-  static updateAsset(getAssetFirebaseID, holdingList, indexTemp) {
-    firestore()
-      .collection('assets')
-      .doc(getAssetFirebaseID)
-      .update({
-        numShare: holdingList[indexTemp].numShare,
-      })
-      .then(() => {
-        console.log('Asset updated correctly');
-      });
-  }
-
-  static editAsset(assetFirebaseID, changeNumSharesVal, changeTagVal) {
-    if (changeNumSharesVal != null) {
-      firestore()
-        .collection('assets')
-        .doc(assetFirebaseID)
-        .update({
-          numShare: changeNumSharesVal,
-        })
-        .then(() => {
-          console.log('Asset updated correctly');
-        });
-    }
-    if (changeTagVal != null) {
-      firestore()
-        .collection('assets')
-        .doc(assetFirebaseID)
-        .update({
-          tag: changeTagVal,
-        })
-        .then(() => {
-          console.log('Asset updated correctly');
-        })
-        .catch(error => {
-          console.log('Error updating assets');
-        });
-    }
-  }
+  // static editAsset(assetFirebaseID, changeNumSharesVal, changeTagVal) {
+  //   if (changeNumSharesVal != null) {
+  //     firestore()
+  //       .collection('assets')
+  //       .doc(assetFirebaseID)
+  //       .update({
+  //         numShare: changeNumSharesVal,
+  //       })
+  //       .then(() => {
+  //         console.log('Asset updated correctly');
+  //       });
+  //   }
+  //   if (changeTagVal != null) {
+  //     firestore()
+  //       .collection('assets')
+  //       .doc(assetFirebaseID)
+  //       .update({
+  //         tag: changeTagVal,
+  //       })
+  //       .then(() => {
+  //         console.log('Asset updated correctly');
+  //       })
+  //       .catch(error => {
+  //         console.log('Error updating assets');
+  //       });
+  //   }
+  // }
 
   // static deleteAsset(assetFirebaseID) {
   //   if (assetFirebaseID == null) {
@@ -104,13 +108,13 @@ class Firebase {
   static createObject(doc) {
     const key = Math.round(Math.random() * 100000000000);
     // parse the doc object data
-    const {ticker, numShare, avgPrice, tag, userId} = doc.data();
+    const {ticker, numShares, avgPrice, tag, userId} = doc.data();
 
     // create the new object to add to the list
     return {
       id: key,
       ticker: ticker,
-      numShares: numShare,
+      numShares: numShares,
       avgPrice: avgPrice,
       currPrice: 0.0,
       tag: tag,

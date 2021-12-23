@@ -118,9 +118,7 @@ const PositionCard = ({newHolding, resetFields, deletion}) => {
     updatePrices();
   }, [holdingList.length]);
 
-  const renderItem = ({item}) => (
-    <HoldingCard key={item.id} data={item} handleDelete={handleDelete} />
-  );
+  const renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
 
   return (
     <View style={styles.container}>
