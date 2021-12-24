@@ -1,6 +1,5 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-
 import HomeScreen from '../screens/HomeScreen';
 import EditAssetScreen from '../screens/EditAssetScreen';
 
@@ -12,18 +11,15 @@ const AppStack = () => {
       <Stack.Screen
         name="Plutus"
         component={HomeScreen}
-        options={{header: () => null}}
+        options={() => ({
+          headerShown: false,
+        })}
       />
       <Stack.Screen
         name="EditAsset"
         component={EditAssetScreen}
-        options={({navigation}) => ({
-          title: '',
-          headerStyle: {
-            backgroundColor: '#f9fafd', //CHANGE THIS LATER, SELECT SAME COLOR AS BACKGROUND
-            shadowColor: '#f9fafd', //CHANGE THIS LATER, SELECT SAME COLOR AS BACKGROUND
-            elevation: 0,
-          },
+        options={() => ({
+          headerShown: false,
         })}
       />
     </Stack.Navigator>

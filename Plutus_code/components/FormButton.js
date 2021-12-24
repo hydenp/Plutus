@@ -3,9 +3,15 @@ import React from 'react';
 import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {windowHeight} from '../utils/Dimentions';
 
-const FormButton = ({buttonTitle, ...rest}) => {
+const FormButton = ({buttonTitle, disabledStatus, ...rest}) => {
   return (
-    <TouchableOpacity style={styles.buttonContainer} {...rest}>
+    <TouchableOpacity
+      style={[
+        styles.buttonContainer,
+        disabledStatus === true ? styles.disabledOpacity : null,
+      ]}
+      disabled={disabledStatus}
+      {...rest}>
       <Text style={styles.buttonText}>{buttonTitle}</Text>
     </TouchableOpacity>
   );
@@ -22,7 +28,10 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 5,
+    borderRadius: 8,
+  },
+  disabledOpacity: {
+    opacity: 0.5,
   },
   buttonText: {
     fontSize: 18,

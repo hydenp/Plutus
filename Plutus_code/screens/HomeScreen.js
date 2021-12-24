@@ -7,178 +7,130 @@ import FormButton from '../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
 
 import PositionCard from '../components/PositionCard';
-import AssetDecorator from '../utils/AssetDecorator';
 import Firebase from '../utils/Firebase';
 
-const HomeScreen = () => {
+const HomeScreen = ({route}) => {
   const {user, logout} = useContext(AuthContext); //get user info and data - to get user ID for example {user.uid}
+  const modalizeState = useRef(null);
 
-  const [ticker, setTicker] = useState(null);
-  const [numShares, setNumShares] = useState(null);
-  const [avgPrice, setAvgPrice] = useState(null);
-  const [tag, setTag] = useState(null);
+  const [tickerToDelete, setTickerToDelete] = useState(null);
+  const [tickerToUpdate, setTickerToUpdate] = useState(null);
+  const [newHolding, setNewHolding] = useState({
+    ticker: null,
+    numShares: null,
+    avgPrice: null,
+    tag: null,
+    submit: false,
+  });
 
-  // Stores the list of Holdings
-  // OBSERVER
-  // changes in this list are automatically updating in the PositionCard
-  const [holdingList, setHoldingList] = useState([]);
-
-  var Singleton = (function () {
-    let modalizeRef;
-
-    function createInstance() {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useRef(null);
-    }
-
-    return {
-      getInstance: function (open) {
-        if (!modalizeRef) {
-          modalizeRef = createInstance();
-        }
-        if (open === true) {
-          modalizeRef.current?.open();
-        }
-        return modalizeRef;
-      },
-      // function to set modal closed or open
-      setInstance: function (status) {
-        if (!modalizeRef) {
-          modalizeRef = createInstance();
-        }
-        if (status === true) {
-          modalizeRef.current?.open();
-        }
-        if (status === false) {
-          modalizeRef.current?.close();
-        }
-        return modalizeRef;
-      },
-    };
-  })();
-
-  const checker = async () => {
-    let assetAlreadyExist = false;
-    let indexTemp = 0;
-
-    let i;
-    for (i = 0; i < holdingList.length; i++) {
-      if (ticker === holdingList[i].ticker) {
-        assetAlreadyExist = true;
-        indexTemp = i;
-        var getAssetFirebaseID = holdingList[i].assetFirebaseID;
-      }
-    }
-    // when updating an asset
-    if (assetAlreadyExist) {
-      // close the modal
-      Singleton.setInstance(false);
-
-      // make an async update to the holdingList
-      await (async function () {
-        const items = [...holdingList];
-        const item = {...holdingList[indexTemp]};
-        item.numShare = parseInt(numShares) + parseInt(item.numShare);
-        items[indexTemp] = item;
-        setHoldingList(items);
-      })();
-
-      // decorate asset obj here
-      // DECORATOR
-      const numSharesUpdate = new AssetDecorator(
-        holdingList[indexTemp],
-        numShares,
-      );
-      numSharesUpdate.decorateAsset();
-
-      // update asset on Firebase
-      Firebase.updateAsset(getAssetFirebaseID, holdingList, indexTemp);
-
-      // reset form input fields
-      setTicker(null);
-      setNumShares(null);
-      setAvgPrice(null);
-      setTag(null);
+  const addPosition = () => {
+    if (newHolding.ticker && newHolding.numShares) {
+      const newState = Object.assign({}, newHolding, {
+        ['submit']: true,
+        ['id']: Math.round(Math.random() * 100000000000),
+      });
+      setNewHolding(newState);
+      modalizeState.current?.close();
     } else {
-      // close the modal
-      Singleton.setInstance(false);
-
-      const addThis = {
-        id: Math.round(Math.random() * 100000000000),
-        userId: user.uid,
-        ticker: ticker,
-        numShare: numShares,
-        avgPrice: avgPrice,
-        tag: tag,
-      };
-      // update the holding list with the new asset
-      await (async function () {
-        const newList = [...holdingList, addThis];
-        setHoldingList(newList);
-      })();
-
-      // add the new asset
-      Firebase.addAssets(user, ticker, numShares, avgPrice, tag);
-
-      // reset fields for add modal
-      setTicker(null);
-      setNumShares(null);
-      setAvgPrice(null);
-      setTag(null);
+      alert('Please provide a Ticker and the Number of Shares');
     }
   };
 
+  const resetDelete = () => {
+    setTickerToDelete(null);
+  };
+
   useEffect(() => {
-    Firebase.fetchData(user).then(querySnapshot => {
-      const list = [];
-      querySnapshot.forEach(doc => {
-        const nextAsset = Firebase.createObject(doc);
-        list.push(nextAsset);
-      });
-      setHoldingList(list);
+    if (typeof route.params !== 'undefined') {
+      // the variable is defined, check if it has ticker
+      if (route.params.hasOwnProperty('ticker')) {
+        Firebase.deleteAsset(route.params.ticker, user.uid);
+
+        // set ticker delete for position card so it's removed from list
+        setTickerToDelete(route.params.ticker);
+      }
+      // If changes made on the edit screen
+      // send these changes to position card from here
+      if (route.params.hasOwnProperty('updateInfo')) {
+        setTickerToUpdate(route.params.updateInfo);
+      }
+    }
+  }, [route.params]);
+
+  const onFieldChange = e => {
+    const {name, value} = e;
+    const newState = Object.assign({}, newHolding, {
+      [name]: value.toUpperCase(),
     });
-  }, [user]);
+    setNewHolding(newState);
+  };
+
+  const resetUpdate = () => {
+    setTickerToUpdate(null);
+  };
+
+  const resetFields = () => {
+    setNewHolding({
+      ticker: null,
+      numShares: null,
+      avgPrice: null,
+      tag: null,
+      submit: false,
+    });
+  };
 
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <PositionCard holdingList={holdingList} />
+        <PositionCard
+          user={user}
+          deletion={{
+            resetDelete: resetDelete,
+            tickerToDelete: tickerToDelete,
+          }}
+          updates={{
+            resetUpdate: resetUpdate,
+            tickerToUpdate: tickerToUpdate,
+          }}
+          newHolding={newHolding}
+          resetFields={resetFields}
+        />
 
         <FormButton
           buttonTitle="Add Position"
-          onPress={() => Singleton.getInstance(true)}
+          onPress={() => modalizeState.current?.open()}
         />
 
-        <Modalize ref={Singleton.getInstance(false)} snapPoint={500}>
+        <Modalize ref={modalizeState} snapPoint={500}>
           <View style={styles.container}>
             <Text style={styles.titleText}> Add a new position </Text>
             <FormInput
-              value={ticker}
-              onChangeText={ticekerValue => setTicker(ticekerValue)}
+              value={newHolding.ticker}
+              onChangeText={value => onFieldChange({name: 'ticker', value})}
               placeholder="Ticker"
               autoCorrect={false}
             />
             <FormInput
-              labelValue={numShares}
-              onChangeText={numSharesValue => setNumShares(numSharesValue)}
-              placeholder="# of Shares"
+              value={newHolding.numShares}
+              onChangeText={value => onFieldChange({name: 'numShares', value})}
+              placeholder="Number of Shares"
               autoCorrect={false}
               keyBoardType="numeric"
             />
             <FormInput
-              labelValue={avgPrice}
-              onChangeText={avgPriceValue => setAvgPrice(avgPriceValue)}
+              value={newHolding.avgPrice}
+              onChangeText={value => onFieldChange({name: 'avgPrice', value})}
               placeholder="Average Price"
               autoCorrect={false}
               keyBoardType="numeric"
             />
             <FormInput
-              labelValue={tag}
-              onChangeText={tagValue => setTag(tagValue)}
+              value={newHolding.tag}
+              onChangeText={value => onFieldChange({name: 'tag', value})}
               placeholder="Tag"
               autoCorrect={false}
             />
-            <FormButton buttonTitle="Save" onPress={checker} />
+            <FormButton buttonTitle="Save" onPress={addPosition} />
           </View>
         </Modalize>
         <FormButton buttonTitle="Logout" onPress={() => logout()} />
@@ -194,7 +146,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    paddingTop: 50,
   },
   titleText: {
     paddingBottom: 20,

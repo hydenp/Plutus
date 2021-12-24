@@ -1,46 +1,116 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {StyleSheet, View, Text, FlatList} from 'react-native';
 
 import HoldingCard from './HoldingCard';
 import TickerInfo from '../utils/TickerInfo';
 import formatter from '../utils/NumberFormatter';
+import {AuthContext} from '../navigation/AuthProvider';
+import Firebase from '../utils/Firebase';
 
-class PositionCard extends Component {
-  state = {
-    position: 0,
-    data: null,
-    holdings: null,
-  };
+const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
+  const {user, logout} = useContext(AuthContext);
+  const [holdingList, setHoldingList] = useState([]);
+  const [position, setPosition] = useState(0.0);
 
-  constructor() {
-    super();
-    this.yourFunction();
-  }
-
-  updatePosition = () => {
-    let sum = 0;
-    for (const key in this.state.holdings) {
-      if (typeof this.state.holdings[key].currPrice === 'number') {
-        sum +=
-          this.state.holdings[key].currPrice *
-          // eslint-disable-next-line radix
-          parseInt(this.state.holdings[key].numShare);
+  const findTicker = ticker => {
+    for (const key in holdingList) {
+      if (holdingList[key].ticker === ticker) {
+        return key;
       }
     }
-    this.setState({
-      position: sum,
-    });
+    return -1;
   };
 
-  updatePrices = () => {
-    for (const key in this.state.holdings) {
-      TickerInfo.getData(this.state.holdings[key].ticker)
+  // when new asset is added
+  useEffect(() => {
+    let duplicate = false;
+    for (const key in holdingList) {
+      if (holdingList[key].ticker === newHolding.ticker) {
+        duplicate = true;
+      }
+    }
+
+    if (duplicate) {
+      // notify the user holding already exists
+      alert(
+        'You already have this Ticker. You can edit your holding by tapping it',
+      );
+      resetFields();
+    } else {
+      // make sure fields not blank
+      if (newHolding.submit) {
+        // add to the holding list
+        setHoldingList([...holdingList, newHolding]);
+        resetFields();
+
+        Firebase.addAssets(user, newHolding)
+          .then(console.log('asset successfully added to firebase'))
+          .catch(e => {
+            console.log('failed to add asset with error: ' + e);
+          });
+      }
+    }
+  }, [newHolding.submit]);
+
+  // load list on component mount
+  // empty dependency array
+  useEffect(() => {
+    Firebase.fetchData(user).then(querySnapshot => {
+      const list = [];
+      querySnapshot.forEach(doc => {
+        const nextAsset = Firebase.createObject(doc);
+        list.push(nextAsset);
+      });
+      setHoldingList(list);
+    });
+  }, []);
+
+  // watch for deletion prompt
+  useEffect(() => {
+    const {resetDelete, tickerToDelete} = deletion;
+    if (tickerToDelete != null) {
+      const index = findTicker(tickerToDelete);
+      let currHoldings = [...holdingList];
+      currHoldings.splice(index, 1);
+      setHoldingList(currHoldings);
+      resetDelete();
+    }
+  }, [deletion.tickerToDelete]);
+
+  // watch for update prompt from edit screen passed through homescreen
+  useEffect(() => {
+    const {resetUpdate, tickerToUpdate} = updates;
+    if (tickerToUpdate !== null) {
+      const index = findTicker(tickerToUpdate.ticker);
+      let newState = [...holdingList];
+      newState[index] = Object.assign({}, newState[index], {
+        ...tickerToUpdate,
+      });
+      setHoldingList(newState);
+      resetUpdate();
+    }
+  }, [updates]);
+
+  // update the total position
+  const updatePosition = () => {
+    let sum = 0;
+    for (const key in holdingList) {
+      sum +=
+        parseFloat(holdingList[key].currPrice) *
+        parseFloat(holdingList[key].numShares);
+    }
+    setPosition(sum);
+  };
+
+  const updatePrices = () => {
+    for (const key in holdingList) {
+      TickerInfo.getData(holdingList[key].ticker)
         .then(res => {
-          let items = [...this.state.holdings];
-          let item = {...items[key]};
+          let items = [...holdingList];
+          let item = items[key];
           item.currPrice = res.data.c;
           items[key] = item;
-          this.setState({holdings: items}, () => this.updatePosition());
+          setHoldingList(items);
         })
         .catch(error => {
           console.log('price call failed with: ' + error);
@@ -48,92 +118,33 @@ class PositionCard extends Component {
     }
   };
 
-  checkUpdate = newList => {
-    for (const key in this.state.holdings) {
-      if (
-        this.state.holdings[key].numShare !== newList[key].numShare ||
-        this.state.holdings[key].avgPrice !== newList[key].avgPrice
-      ) {
-        let items = [...this.state.holdings];
-        let updatedItem = {...this.state.holdings[key]};
-        updatedItem.numShare = newList[key].numShare;
-        updatedItem.avgPrice = newList[key].avgPrice;
-        items[key] = updatedItem;
-        this.setState(
-          {
-            holdings: items,
-          },
-          () => {
-            this.updatePosition();
-          },
-        );
-      }
-    }
-  };
+  useEffect(() => {
+    updatePrices();
+    updatePosition();
+  }, [holdingList.length]);
 
-  // OBSERVER
-  // this React hook listens for changes to the props
-  // when changes are made, this function updates
-  // when that happens, all child HoldingCards update their values
-  componentDidUpdate = props => {
-    if (this.state.holdings !== null) {
-      if (this.state.holdings.length !== props.holdingList.length) {
-        // eslint-disable-next-line react/no-did-update-set-state
-        this.setState(
-          {
-            holdings: props.holdingList,
-          },
-          () => {
-            this.updatePrices();
-            // this.updatePosition();
-          },
-        );
-        // if the list size did not change but something was updated
-        // a number of shares should be updated
-      } else {
-        this.checkUpdate(props.holdingList);
-      }
-    } else {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState(
-        {
-          holdings: props.holdingList,
-        },
-        () => {
-          this.updatePrices();
-        },
-      );
-    }
-  };
+  useEffect(() => {
+    updatePosition();
+  }, [holdingList]);
 
-  // function to call update prices every 15 seconds
-  yourFunction = () => {
-    this.updatePrices();
-    setTimeout(this.yourFunction, 15000);
-  };
+  const renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
 
-  renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.position}>
-          <Text style={styles.positionFont}>Hi Hyden </Text>
-          <Text style={styles.positionFont}>
-            {formatter.format(this.state.position)}
-          </Text>
-        </View>
-
-        {/*Render the list of Holdings*/}
-        <FlatList
-          data={this.state.holdings}
-          renderItem={this.renderItem}
-          keyExtractor={item => item.id}
-        />
+  return (
+    <View style={styles.container}>
+      <View style={styles.position}>
+        <Text style={styles.positionFont}>Hi Name </Text>
+        <Text style={styles.positionFont}>{formatter.format(position)}</Text>
       </View>
-    );
-  }
-}
+
+      {/*Render the list of Holdings*/}
+      <FlatList
+        data={holdingList}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+    </View>
+  );
+};
 
 export default PositionCard;
 

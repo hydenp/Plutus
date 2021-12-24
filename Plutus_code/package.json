@@ -24,6 +24,8 @@
     "react-native-gesture-handler": "^1.10.3",
     "react-native-material-dropdown": "^0.11.1",
     "react-native-modalize": "^2.0.12",
+    "react-native-paper": "^4.11.1",
+    "react-native-radio-buttons-group": "^2.2.7",
     "react-native-reanimated": "^2.2.3",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.9.0",

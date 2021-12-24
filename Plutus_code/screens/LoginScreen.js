@@ -16,7 +16,7 @@ const LoginScreen = ({navigation}) => {
       <FormInput
         labelValue={email}
         onChangeText={userEmail => setEmail(userEmail)}
-        placeholder="e-mail"
+        placeholder="Email"
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
@@ -33,7 +33,7 @@ const LoginScreen = ({navigation}) => {
       />
       <TouchableOpacity
         style={styles.forgotButton}
-        onPress={() => navigation.navigate('Signup')}>
+        onPress={() => navigation.navigate('Sign Up')}>
         <Text style={styles.navButtonText}>Create account</Text>
       </TouchableOpacity>
     </View>
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   forgotButton: {
-    marginVertical: 35,
+    marginVertical: 15,
   },
   navButtonText: {
     fontSize: 18,
