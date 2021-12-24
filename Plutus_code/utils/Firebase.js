@@ -20,23 +20,6 @@ class Firebase {
       .get();
   }
 
-  // static async handleFetchDocument(docID) {
-  //   return Firebase.fetchDocument(docID).then(res => {
-  //     let newAsset = null;
-  //     res.forEach(doc => {
-  //       newAsset = Firebase.createObject(doc);
-  //     });
-  //     return newAsset;
-  //   });
-  // }
-
-  // static async fetchDocument(docID) {
-  //   return firestore()
-  //     .collection('assets')
-  //     .where(firebase.firestore.FieldPath.documentId(), '==', docID)
-  //     .get();
-  // }
-
   static updateAsset(user, ticker, updates) {
     const doc_query = firestore()
       .collection('assets')

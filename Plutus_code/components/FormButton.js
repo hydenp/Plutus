@@ -6,7 +6,10 @@ import {windowHeight} from '../utils/Dimentions';
 const FormButton = ({buttonTitle, disabledStatus, ...rest}) => {
   return (
     <TouchableOpacity
-      style={styles.buttonContainer}
+      style={[
+        styles.buttonContainer,
+        disabledStatus === true ? styles.disabledOpacity : null,
+      ]}
       disabled={disabledStatus}
       {...rest}>
       <Text style={styles.buttonText}>{buttonTitle}</Text>
@@ -26,6 +29,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5,
+  },
+  disabledOpacity: {
+    opacity: 0.5,
   },
   buttonText: {
     fontSize: 18,

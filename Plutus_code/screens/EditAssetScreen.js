@@ -1,5 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import RadioGroup from 'react-native-radio-buttons-group';
 
@@ -10,16 +16,21 @@ import Firebase from '../utils/Firebase';
 import formatter from '../utils/NumberFormatter';
 import {AuthContext} from '../navigation/AuthProvider';
 
-const EditAssetScreen = ({route}) => {
-  const navigation = useNavigation();
+const EditAssetScreen = ({navigation, route}) => {
+  // const navigation = useNavigation();
 
   const {user} = useContext(AuthContext);
 
   const [holdingInfo, setHoldingInfo] = useState(route.params);
 
+  // console.log('****************************************');
+  // console.log(route.params);
+  // console.log('****************************************');
+
   const [updateNumShare, setUpdateNumShare] = useState(null);
   const [updateAvgPrice, setUpdateAvgPrice] = useState(null);
   const [updateTag, setUpdateTag] = useState(null);
+  const [updateInfo, setUpdateInfo] = useState(null);
 
   const [saveButtonStatus, setSaveButtonStatus] = useState(true);
   const radioButtonsData = [
@@ -71,15 +82,15 @@ const EditAssetScreen = ({route}) => {
       console.log('add!');
 
       if (updateNumShare === null || updateAvgPrice === null) {
+        // eslint-disable-next-line no-alert
         alert('Please provide an average price for the new number of shares');
       } else {
         // calculate the new avg price
-        const newAvgPrice =
+        payload.avgPrice =
           (parseFloat(holdingInfo.numShares) *
             parseFloat(holdingInfo.avgPrice) +
             parseFloat(updateAvgPrice) * parseFloat(updateNumShare)) /
           (parseFloat(holdingInfo.numShares) + parseFloat(updateNumShare));
-        payload.avgPrice = newAvgPrice;
         payload.numShares =
           parseFloat(holdingInfo.numShares) + parseFloat(updateNumShare);
 
@@ -93,18 +104,41 @@ const EditAssetScreen = ({route}) => {
         Firebase.updateAsset(user, holdingInfo.ticker, payload);
       }
     }
+    payload.ticker = holdingInfo.ticker;
+    setUpdateInfo(payload);
   };
 
   useEffect(() => {
-    if (updateNumShare !== null || updateTag !== null) {
-      setSaveButtonStatus(false);
+    // when overwrite selected
+    if (radioButtons[0].selected === true) {
+      if (updateNumShare !== null || updateTag !== null) {
+        setSaveButtonStatus(false);
+      } else {
+        setSaveButtonStatus(true);
+      }
+      // when add is selected
     } else {
-      setSaveButtonStatus(true);
+      if (
+        (updateNumShare !== null && updateAvgPrice !== null) ||
+        (updateNumShare == null && updateAvgPrice == null && updateTag !== null)
+      ) {
+        setSaveButtonStatus(false);
+      } else {
+        setSaveButtonStatus(true);
+      }
     }
-  }, [updateNumShare, updateTag]);
+  }, [updateNumShare, updateAvgPrice, updateTag, radioButtons]);
 
   return (
     <SafeAreaView>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Plutus', {
+            updateInfo: updateInfo === null ? null : updateInfo,
+          })
+        }>
+        <Text>Back</Text>
+      </TouchableOpacity>
       <View style={styles.container}>
         <Text style={styles.titleText}> {holdingInfo.ticker} </Text>
         <Text style={styles.mktValueText}>
@@ -166,7 +200,6 @@ const EditAssetScreen = ({route}) => {
           buttonTitle="Save"
           disabledStatus={saveButtonStatus}
           onPress={() => {
-            // Firebase.editAsset(getID, updateNumShare, updateTag);
             handleUpdate();
             // navigation.navigate('Plutus');
           }}
@@ -174,9 +207,8 @@ const EditAssetScreen = ({route}) => {
         <FormButton
           buttonTitle="Delete Asset"
           onPress={() => {
-            // Firebase.deleteAsset(getID);
             navigation.navigate('Plutus', {
-              ticker: ticker,
+              ticker: holdingInfo.ticker,
             });
           }}
         />

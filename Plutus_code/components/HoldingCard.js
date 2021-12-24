@@ -12,11 +12,7 @@ const HoldingCard = prop => {
   const [shares, setShares] = useState(prop.data.numShares);
   const navigation = useNavigation();
 
-  // OBSERVER
-  // when the change is received, we update these observers
-  // the values are then reflected in the display below
   useEffect(() => {
-    console.log(prop);
     setPrice(prop.data.currPrice);
     setShares(prop.data.numShares);
   }, [prop.data.currPrice, prop.data.numShares]);
@@ -32,6 +28,7 @@ const HoldingCard = prop => {
             avgPrice: prop.data.avgPrice,
             price: price,
             tag: prop.data.tag,
+            test: prop.test,
           })
         }>
         <Text style={styles.holdingFont}>{prop.data.ticker}</Text>

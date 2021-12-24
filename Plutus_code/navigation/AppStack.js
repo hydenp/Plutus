@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import HomeScreen from '../screens/HomeScreen';
 import EditAssetScreen from '../screens/EditAssetScreen';
+import {TouchableOpacity, Text} from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -11,19 +12,15 @@ const AppStack = () => {
     <Stack.Navigator>
       <Stack.Screen
         name="Plutus"
+        // screenOptions={{headerShown: false}}
         component={HomeScreen}
-        options={{header: () => null}}
+        options={() => ({header: () => null})}
       />
       <Stack.Screen
         name="EditAsset"
         component={EditAssetScreen}
-        options={({navigation}) => ({
-          title: '',
-          headerStyle: {
-            backgroundColor: '#f9fafd', //CHANGE THIS LATER, SELECT SAME COLOR AS BACKGROUND
-            shadowColor: '#f9fafd', //CHANGE THIS LATER, SELECT SAME COLOR AS BACKGROUND
-            elevation: 0,
-          },
+        options={() => ({
+          headerShown: false,
         })}
       />
     </Stack.Navigator>

@@ -14,6 +14,7 @@ const HomeScreen = ({route}) => {
   const modalizeState = useRef(null);
 
   const [tickerToDelete, setTickerToDelete] = useState(null);
+  const [tickerToUpdate, setTickerToUpdate] = useState(null);
   const [newHolding, setNewHolding] = useState({
     ticker: null,
     numShares: null,
@@ -45,11 +46,15 @@ const HomeScreen = ({route}) => {
       if (route.params.hasOwnProperty('ticker')) {
         Firebase.deleteAsset(route.params.ticker, user.uid);
 
-        // set ticker delete for position card so its removed from list
+        // set ticker delete for position card so it's removed from list
         setTickerToDelete(route.params.ticker);
       }
+
+      if (route.params.hasOwnProperty('updateInfo')) {
+        setTickerToUpdate(route.params.updateInfo);
+      }
     }
-  }, [route]);
+  }, [route.params]);
 
   const onFieldChange = e => {
     const {name, value} = e;
@@ -57,6 +62,10 @@ const HomeScreen = ({route}) => {
       [name]: value.toUpperCase(),
     });
     setNewHolding(newState);
+  };
+
+  const resetUpdate = () => {
+    setTickerToUpdate(null);
   };
 
   const resetFields = () => {
@@ -77,6 +86,10 @@ const HomeScreen = ({route}) => {
           deletion={{
             resetDelete: resetDelete,
             tickerToDelete: tickerToDelete,
+          }}
+          updates={{
+            resetUpdate: resetUpdate,
+            tickerToUpdate: tickerToUpdate,
           }}
           newHolding={newHolding}
           resetFields={resetFields}

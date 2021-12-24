@@ -7,7 +7,7 @@ import formatter from '../utils/NumberFormatter';
 import {AuthContext} from '../navigation/AuthProvider';
 import Firebase from '../utils/Firebase';
 
-const PositionCard = ({newHolding, resetFields, deletion}) => {
+const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
   const {user, logout} = useContext(AuthContext);
   const [holdingList, setHoldingList] = useState([]);
   const [position, setPosition] = useState(0.0);
@@ -69,12 +69,6 @@ const PositionCard = ({newHolding, resetFields, deletion}) => {
     });
   }, []);
 
-  const handleDelete = (userID, ticker) => {
-    const idx = findTicker(ticker);
-    const newList = holdingList.splice(idx, 1);
-    setHoldingList(newList);
-  };
-
   // watch for deletion prompt
   useEffect(() => {
     const {resetDelete, tickerToDelete} = deletion;
@@ -87,13 +81,27 @@ const PositionCard = ({newHolding, resetFields, deletion}) => {
     }
   }, [deletion.tickerToDelete]);
 
+  // watch for update prompt from edit screen passed through homescreen
+  useEffect(() => {
+    const {resetUpdate, tickerToUpdate} = updates;
+    if (tickerToUpdate !== null) {
+      const index = findTicker(tickerToUpdate.ticker);
+      let newState = [...holdingList];
+      newState[index] = Object.assign({}, newState[index], {
+        ...tickerToUpdate,
+      });
+      setHoldingList(newState);
+      resetUpdate();
+    }
+  }, [updates]);
+
+  // update the total position
   const updatePosition = () => {
     let sum = 0;
     for (const key in holdingList) {
       sum +=
-        holdingList[key].currPrice *
-        // eslint-disable-next-line radix
-        parseInt(holdingList[key].numShare);
+        parseFloat(holdingList[key].currPrice) *
+        parseFloat(holdingList[key].numShares);
     }
     setPosition(sum);
   };
@@ -116,7 +124,12 @@ const PositionCard = ({newHolding, resetFields, deletion}) => {
 
   useEffect(() => {
     updatePrices();
+    updatePosition();
   }, [holdingList.length]);
+
+  useEffect(() => {
+    updatePosition();
+  }, [holdingList]);
 
   const renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
 
