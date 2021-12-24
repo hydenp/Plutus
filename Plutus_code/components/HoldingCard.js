@@ -43,12 +43,13 @@ export default HoldingCard;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    margin: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '90%',
+    width: '100%',
     height: 50,
     backgroundColor: '#C4C4C4',
     borderRadius: 8,

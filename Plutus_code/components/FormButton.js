@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 5,
+    borderRadius: 8,
   },
   disabledOpacity: {
     opacity: 0.5,

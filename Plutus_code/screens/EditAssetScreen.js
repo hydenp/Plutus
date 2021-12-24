@@ -6,7 +6,6 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import RadioGroup from 'react-native-radio-buttons-group';
 
 import FormInput from '../components/FormInput';
@@ -17,16 +16,9 @@ import formatter from '../utils/NumberFormatter';
 import {AuthContext} from '../navigation/AuthProvider';
 
 const EditAssetScreen = ({navigation, route}) => {
-  // const navigation = useNavigation();
-
   const {user} = useContext(AuthContext);
 
   const [holdingInfo, setHoldingInfo] = useState(route.params);
-
-  // console.log('****************************************');
-  // console.log(route.params);
-  // console.log('****************************************');
-
   const [updateNumShare, setUpdateNumShare] = useState(null);
   const [updateAvgPrice, setUpdateAvgPrice] = useState(null);
   const [updateTag, setUpdateTag] = useState(null);
@@ -99,8 +91,6 @@ const EditAssetScreen = ({navigation, route}) => {
         });
         setHoldingInfo(newState);
         resetFields();
-
-        console.log(payload);
         Firebase.updateAsset(user, holdingInfo.ticker, payload);
       }
     }
@@ -108,6 +98,7 @@ const EditAssetScreen = ({navigation, route}) => {
     setUpdateInfo(payload);
   };
 
+  // update saved button depending on what info is entered
   useEffect(() => {
     // when overwrite selected
     if (radioButtons[0].selected === true) {
@@ -201,7 +192,6 @@ const EditAssetScreen = ({navigation, route}) => {
           disabledStatus={saveButtonStatus}
           onPress={() => {
             handleUpdate();
-            // navigation.navigate('Plutus');
           }}
         />
         <FormButton

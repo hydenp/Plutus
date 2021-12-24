@@ -49,7 +49,8 @@ const HomeScreen = ({route}) => {
         // set ticker delete for position card so it's removed from list
         setTickerToDelete(route.params.ticker);
       }
-
+      // If changes made on the edit screen
+      // send these changes to position card from here
       if (route.params.hasOwnProperty('updateInfo')) {
         setTickerToUpdate(route.params.updateInfo);
       }
@@ -145,7 +146,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    paddingTop: 50,
   },
   titleText: {
     paddingBottom: 20,

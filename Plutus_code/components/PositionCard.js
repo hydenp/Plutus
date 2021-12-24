@@ -14,8 +14,6 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
 
   const findTicker = ticker => {
     for (const key in holdingList) {
-      console.log(holdingList[key].ticker);
-      console.log(key);
       if (holdingList[key].ticker === ticker) {
         return key;
       }
@@ -41,8 +39,6 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
     } else {
       // make sure fields not blank
       if (newHolding.submit) {
-        console.log('adding new asset');
-
         // add to the holding list
         setHoldingList([...holdingList, newHolding]);
         resetFields();
