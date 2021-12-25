@@ -180,7 +180,6 @@ const styles = StyleSheet.create({
     width: '100%',
     color: 'white',
     borderRadius: 5,
-    dropShadow: 5,
   },
   position: {
     alignItems: 'center',
@@ -189,7 +188,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   flatList: {
-    flexGrow: 0,
+    // flexGrow: 0,
+    height: '100%',
   },
   positionFont: {
     fontWeight: 'bold',

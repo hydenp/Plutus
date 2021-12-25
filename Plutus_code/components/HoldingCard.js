@@ -18,24 +18,30 @@ const HoldingCard = prop => {
   }, [prop.data.currPrice, prop.data.numShares]);
 
   return (
-    <View>
-      <TouchableOpacity
-        style={styles.container}
-        onPress={() =>
-          navigation.navigate('EditAsset', {
-            ticker: prop.data.ticker,
-            numShares: prop.data.numShares,
-            avgPrice: prop.data.avgPrice,
-            price: price,
-            tag: prop.data.tag,
-            test: prop.test,
-          })
-        }>
-        <Text style={styles.holdingFont}>{prop.data.ticker}</Text>
-        <Text style={styles.holdingFont}>{shares}</Text>
-        <Text style={styles.holdingFont}>{formatter.format(price)}</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() =>
+        navigation.navigate('EditAsset', {
+          ticker: prop.data.ticker,
+          numShares: prop.data.numShares,
+          avgPrice: prop.data.avgPrice,
+          price: price,
+          tag: prop.data.tag,
+          test: prop.test,
+        })
+      }>
+      <View style={styles.holdingInfo}>
+        <Text style={[styles.holdingFont, {textAlign: 'left'}]}>
+          {prop.data.ticker}
+        </Text>
+        <Text style={[styles.holdingFont, {textAlign: 'center'}]}>
+          {shares}
+        </Text>
+        <Text style={[styles.holdingFont, {textAlign: 'right'}]}>
+          {formatter.format(price)}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -44,16 +50,20 @@ export default HoldingCard;
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
-    marginTop: 12,
-    flexDirection: 'row',
+    marginTop: 15,
     alignItems: 'center',
-    justifyContent: 'space-between',
     width: '100%',
     height: 50,
     backgroundColor: '#DDDDDD',
     borderRadius: 8,
   },
+  holdingInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   holdingFont: {
+    width: '33.333%',
     fontSize: 15,
     fontWeight: 'bold',
   },
