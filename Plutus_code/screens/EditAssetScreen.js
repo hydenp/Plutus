@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
-import {globalStyles} from '../utils/styles';
+import {globalStyles} from '../utils/Styles';
 
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
@@ -58,47 +58,53 @@ const EditAssetScreen = ({navigation, route}) => {
   };
 
   const handleUpdate = () => {
-    const payload = {
-      ...(updateNumShare !== null && {numShares: updateNumShare}),
-      ...(updateAvgPrice !== null && {avgPrice: updateAvgPrice}),
-      ...(updateTag !== null && {tag: updateTag}),
-    };
-
-    if (radioButtons[0].selected === true) {
-      console.log('overwrite!');
-      Firebase.updateAsset(user, holdingInfo.ticker, payload);
-
-      const newState = Object.assign({}, holdingInfo, {
-        ...payload,
-      });
-      setHoldingInfo(newState);
-      resetFields();
+    if (isNaN(updateNumShare) || isNaN(updateAvgPrice)) {
+      alert(
+        'Please enter numeric values for the Number of Shares and Average Price',
+      );
     } else {
-      console.log('add!');
+      const payload = {
+        ...(updateNumShare !== null && {numShares: parseFloat(updateNumShare)}),
+        ...(updateAvgPrice !== null && {avgPrice: parseFloat(updateAvgPrice)}),
+        ...(updateTag !== null && {tag: updateTag}),
+      };
 
-      if (updateNumShare === null || updateAvgPrice === null) {
-        // eslint-disable-next-line no-alert
-        alert('Please provide an average price for the new number of shares');
-      } else {
-        // calculate the new avg price
-        payload.avgPrice =
-          (parseFloat(holdingInfo.numShares) *
-            parseFloat(holdingInfo.avgPrice) +
-            parseFloat(updateAvgPrice) * parseFloat(updateNumShare)) /
-          (parseFloat(holdingInfo.numShares) + parseFloat(updateNumShare));
-        payload.numShares =
-          parseFloat(holdingInfo.numShares) + parseFloat(updateNumShare);
+      if (radioButtons[0].selected === true) {
+        console.log('overwrite!');
+        Firebase.updateAsset(user, holdingInfo.ticker, payload);
 
         const newState = Object.assign({}, holdingInfo, {
           ...payload,
         });
         setHoldingInfo(newState);
         resetFields();
-        Firebase.updateAsset(user, holdingInfo.ticker, payload);
+      } else {
+        console.log('add!');
+
+        if (updateNumShare === null || updateAvgPrice === null) {
+          // eslint-disable-next-line no-alert
+          alert('Please provide an average price for the new number of shares');
+        } else {
+          // calculate the new avg price
+          payload.avgPrice =
+            (parseFloat(holdingInfo.numShares) *
+              parseFloat(holdingInfo.avgPrice) +
+              parseFloat(updateAvgPrice) * parseFloat(updateNumShare)) /
+            (parseFloat(holdingInfo.numShares) + parseFloat(updateNumShare));
+          payload.numShares =
+            parseFloat(holdingInfo.numShares) + parseFloat(updateNumShare);
+
+          const newState = Object.assign({}, holdingInfo, {
+            ...payload,
+          });
+          setHoldingInfo(newState);
+          resetFields();
+          Firebase.updateAsset(user, holdingInfo.ticker, payload);
+        }
       }
+      payload.ticker = holdingInfo.ticker;
+      setUpdateInfo(payload);
     }
-    payload.ticker = holdingInfo.ticker;
-    setUpdateInfo(payload);
   };
 
   // update saved button depending on what info is entered

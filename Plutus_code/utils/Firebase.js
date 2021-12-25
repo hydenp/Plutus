@@ -4,13 +4,15 @@ import firestore, {firebase} from '@react-native-firebase/firestore';
 class Firebase {
   // add a new asset to firebase
   static addAssets(user, {ticker, numShares, avgPrice, tag}) {
-    return firestore().collection('assets').add({
-      userId: user.uid,
-      ticker: ticker,
-      numShares: numShares,
-      avgPrice: avgPrice,
-      tag: tag,
-    });
+    return firestore()
+      .collection('assets')
+      .add({
+        userId: user.uid,
+        ticker: ticker,
+        numShares: isNaN(numShares) ? parseFloat(numShares) : null,
+        avgPrice: isNaN(avgPrice) ? parseFloat(avgPrice) : null,
+        tag: tag,
+      });
   }
 
   static fetchData(user) {
@@ -26,12 +28,9 @@ class Firebase {
       .where('ticker', '==', ticker, 'userID', '==', user.uid);
     doc_query.get().then(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
-        doc.ref
-          .update(updates)
-          // .then(console.log('asset successfully updated'))
-          .catch(e => {
-            console.log('update failed with' + e);
-          });
+        doc.ref.update(updates).catch(e => {
+          console.log('update failed with' + e);
+        });
       });
     });
   }

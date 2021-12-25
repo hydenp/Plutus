@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
-import {globalStyles} from '../utils/styles';
+import {globalStyles} from '../utils/Styles';
 
 const SignupScreen = () => {
   const [email, setEmail] = useState();
@@ -12,31 +12,8 @@ const SignupScreen = () => {
   const {register} = useContext(AuthContext);
 
   return (
-    // <View style={styles.container}>
-    //   <Text style={styles.text}>Create an account</Text>
-    //   <FormInput
-    //     labelValue={email}
-    //     onChangeText={userEmail => setEmail(userEmail)}
-    //     placeholder="Enter an e-mail"
-    //     keyboardType="email-address"
-    //     autoCapitalize="none"
-    //     autoCorrect={false}
-    //   />
-    //   <FormInput
-    //     labelValue={password}
-    //     onChangeText={userPassword => setPassword(userPassword)}
-    //     placeholder="Enter Password"
-    //     secureTextEntry={true}
-    //   />
-    //   <FormButton
-    //     buttonTitle="Sign Up"
-    //     onPress={() => register(email, password)}
-    //   />
-    // </View>
-
     <View
       style={{
-        // flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-start',
         marginTop: 80,

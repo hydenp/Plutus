@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
-import {globalStyles} from '../utils/styles';
+import {globalStyles} from '../utils/Styles';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState();

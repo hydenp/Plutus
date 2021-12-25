@@ -5,7 +5,7 @@ import {Modalize} from 'react-native-modalize';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
-import {globalStyles} from '../utils/styles';
+import {globalStyles} from '../utils/Styles';
 
 import PositionCard from '../components/PositionCard';
 import Firebase from '../utils/Firebase';
@@ -25,15 +25,27 @@ const HomeScreen = ({route}) => {
   });
 
   const addPosition = () => {
-    if (newHolding.ticker && newHolding.numShares) {
+    // make sure inputs are numeric
+    if (isNaN(newHolding.numShares) || isNaN(newHolding.avgPrice)) {
       const newState = Object.assign({}, newHolding, {
-        ['submit']: true,
-        ['id']: Math.round(Math.random() * 100000000000),
+        numShares: null,
+        avgPrice: null,
       });
       setNewHolding(newState);
-      modalizeState.current?.close();
+      alert(
+        'Please enter numeric values for the Number of Shares and Average Price',
+      );
     } else {
-      alert('Please provide a Ticker and the Number of Shares');
+      if (newHolding.ticker && newHolding.numShares) {
+        const newState = Object.assign({}, newHolding, {
+          ['submit']: true,
+          ['id']: Math.round(Math.random() * 100000000000),
+        });
+        setNewHolding(newState);
+        modalizeState.current?.close();
+      } else {
+        alert('Please provide a Ticker and the Number of Shares');
+      }
     }
   };
 
