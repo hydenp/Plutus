@@ -16,7 +16,6 @@ import FormButton from '../components/FormButton';
 import Firebase from '../utils/Firebase';
 import formatter from '../utils/NumberFormatter';
 import {AuthContext} from '../navigation/AuthProvider';
-import {blue} from 'react-native-reanimated/src/reanimated2/Colors';
 
 const EditAssetScreen = ({navigation, route}) => {
   const {user} = useContext(AuthContext);
@@ -342,7 +341,6 @@ const styles = StyleSheet.create({
   bodyText: {
     width: '50%',
     margin: 2,
-    // paddingBottom: 5,
     padding: 3,
     fontSize: 15,
   },

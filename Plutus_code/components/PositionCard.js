@@ -8,7 +8,7 @@ import {AuthContext} from '../navigation/AuthProvider';
 import Firebase from '../utils/Firebase';
 
 const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
-  const {user, logout} = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const [holdingList, setHoldingList] = useState([]);
   const [position, setPosition] = useState(0.0);
   const [refreshStatus, setRefreshStatus] = useState(false);
