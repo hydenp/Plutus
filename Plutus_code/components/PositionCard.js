@@ -165,6 +165,7 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
         keyExtractor={item => item.id}
         refreshing={refreshStatus}
         onRefresh={refreshList}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );

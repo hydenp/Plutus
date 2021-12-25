@@ -15,6 +15,7 @@ import FormButton from '../components/FormButton';
 import Firebase from '../utils/Firebase';
 import formatter from '../utils/NumberFormatter';
 import {AuthContext} from '../navigation/AuthProvider';
+import {blue} from 'react-native-reanimated/src/reanimated2/Colors';
 
 const EditAssetScreen = ({navigation, route}) => {
   const {user} = useContext(AuthContext);
@@ -135,7 +136,7 @@ const EditAssetScreen = ({navigation, route}) => {
         style={[
           styles.backButton,
           globalStyles.card,
-          {borderRadius: 8, shadowOpacity: 0.15},
+          {borderRadius: 8, shadowOpacity: 0.1},
         ]}
         onPress={() =>
           navigation.navigate('Plutus', {
@@ -151,21 +152,32 @@ const EditAssetScreen = ({navigation, route}) => {
           Market Value:{' '}
           {formatter.format(holdingInfo.price * holdingInfo.numShares)}{' '}
         </Text>
-        <Text style={styles.bodyText}>
-          {' '}
-          Number of Shares: {holdingInfo.numShares}{' '}
-        </Text>
-        <Text style={styles.bodyText}>
-          {' '}
-          Current Price: {formatter.format(holdingInfo.price)}{' '}
-        </Text>
-        <Text style={styles.bodyText}>
-          {' '}
-          Tag:{' '}
-          {holdingInfo.tag === null || holdingInfo.tag.length === 0
-            ? 'N/A'
-            : holdingInfo.tag}{' '}
-        </Text>
+        <View style={styles.updateAssetContainer}>
+          <View style={styles.infoContainer}>
+            <Text style={[styles.bodyText, {textAlign: 'left'}]}>
+              Number of Shares
+            </Text>
+            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+              {holdingInfo.numShares}
+            </Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={[styles.bodyText, {textAlign: 'left'}]}>
+              Current Price
+            </Text>
+            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+              {formatter.format(holdingInfo.price)}
+            </Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={[styles.bodyText, {textAlign: 'left'}]}>Tag</Text>
+            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+              {holdingInfo.tag === null || holdingInfo.tag.length === 0
+                ? 'N/A'
+                : holdingInfo.tag}{' '}
+            </Text>
+          </View>
+        </View>
 
         <View style={styles.updateAssetContainer}>
           <FormInput
@@ -227,11 +239,10 @@ export default EditAssetScreen;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 25,
   },
   backButton: {
     borderRadius: 8,
@@ -247,21 +258,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   titleText: {
-    paddingBottom: 20,
+    paddingBottom: 15,
     fontSize: 25,
     fontWeight: 'bold',
   },
   updateAssetContainer: {
+    width: '100%',
     borderRadius: 8,
-    padding: 5,
+    padding: 10,
     marginHorizontal: 10,
     marginVertical: 5,
     backgroundColor: '#F6F6F6',
     alignItems: 'center',
   },
+  infoContainer: {
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    // alignItems: 'center',
+  },
   bodyText: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    // textAlign: 'center',
+    width: '50%',
+    // backgroundColor: 'green',
+    margin: 2,
+    // alignItems: 'flex-start',
     paddingBottom: 10,
     fontSize: 15,
   },
