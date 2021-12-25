@@ -25,6 +25,7 @@ const EditAssetScreen = ({navigation, route}) => {
   const [updateAvgPrice, setUpdateAvgPrice] = useState(null);
   const [updateTag, setUpdateTag] = useState(null);
   const [updateInfo, setUpdateInfo] = useState(null);
+  const [investmentROI, setInvestmentROI] = useState(null);
 
   const [saveButtonStatus, setSaveButtonStatus] = useState(true);
   const radioButtonsData = [
@@ -67,7 +68,7 @@ const EditAssetScreen = ({navigation, route}) => {
       const payload = {
         ...(updateNumShare !== null && {numShares: parseFloat(updateNumShare)}),
         ...(updateAvgPrice !== null && {avgPrice: parseFloat(updateAvgPrice)}),
-        ...(updateTag !== null && {tag: updateTag}),
+        ...(updateTag !== null && {tag: updateTag.toUpperCase()}),
       };
 
       if (radioButtons[0].selected === true) {
@@ -108,6 +109,32 @@ const EditAssetScreen = ({navigation, route}) => {
     }
   };
 
+  const calcRIO = () => {
+    let avgPrice;
+    if (updateInfo !== null) {
+      avgPrice =
+        updateInfo.hasOwnProperty('avgPrice') !== false
+          ? updateInfo.avgPrice
+          : route.params.avgPrice;
+    } else {
+      avgPrice = route.params.avgPrice;
+    }
+    return (
+      (parseFloat(route.params.price) - parseFloat(avgPrice)) /
+      parseFloat(route.params.price)
+    );
+  };
+
+  useEffect(() => {
+    //  ROI = net return / cost
+    console.log('hello');
+    console.log(route.params.price);
+    console.log(route.params.avgPrice);
+    // console.log(route.params.price)
+    const netReturn = calcRIO();
+    setInvestmentROI(netReturn * 100);
+  }, [updateAvgPrice, updateNumShare, route.params, updateInfo]);
+
   // update saved button depending on what info is entered
   useEffect(() => {
     // when overwrite selected
@@ -143,16 +170,19 @@ const EditAssetScreen = ({navigation, route}) => {
             updateInfo: updateInfo === null ? null : updateInfo,
           })
         }>
-        <Text style={styles.backButtonText}> Back</Text>
+        <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
       <View style={[styles.container, globalStyles.card, {margin: 20}]}>
-        <Text style={styles.titleText}> {holdingInfo.ticker} </Text>
-        <Text style={styles.mktValueText}>
-          {' '}
-          Market Value:{' '}
-          {formatter.format(holdingInfo.price * holdingInfo.numShares)}{' '}
-        </Text>
+        <Text style={styles.titleText}>{holdingInfo.ticker}</Text>
         <View style={styles.updateAssetContainer}>
+          <View style={styles.infoContainer}>
+            <Text style={[styles.bodyText, {textAlign: 'left'}]}>
+              Position Market Value
+            </Text>
+            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+              {formatter.format(holdingInfo.price * holdingInfo.numShares)}
+            </Text>
+          </View>
           <View style={styles.infoContainer}>
             <Text style={[styles.bodyText, {textAlign: 'left'}]}>
               Number of Shares
@@ -167,6 +197,14 @@ const EditAssetScreen = ({navigation, route}) => {
             </Text>
             <Text style={[styles.bodyText, {textAlign: 'right'}]}>
               {formatter.format(holdingInfo.price)}
+            </Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={[styles.bodyText, {textAlign: 'left'}]}>Returns</Text>
+            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+              {!isNaN(investmentROI)
+                ? parseFloat(investmentROI).toFixed(2) + '%'
+                : 'N/A'}
             </Text>
           </View>
           <View style={styles.infoContainer}>
@@ -241,7 +279,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 15,
     paddingTop: 25,
   },
   backButton: {
@@ -275,20 +313,11 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     justifyContent: 'center',
-    // alignItems: 'center',
   },
   bodyText: {
-    // textAlign: 'center',
     width: '50%',
-    // backgroundColor: 'green',
     margin: 2,
-    // alignItems: 'flex-start',
-    paddingBottom: 10,
+    paddingBottom: 5,
     fontSize: 15,
-  },
-  mktValueText: {
-    paddingBottom: 20,
-    fontSize: 20,
-    fontWeight: 'bold',
   },
 });
