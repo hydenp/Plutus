@@ -5,6 +5,7 @@ import {Modalize} from 'react-native-modalize';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
+import {globalStyles} from '../utils/styles';
 
 import PositionCard from '../components/PositionCard';
 import Firebase from '../utils/Firebase';
@@ -80,8 +81,8 @@ const HomeScreen = ({route}) => {
   };
 
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
+    <SafeAreaView style={{flex: 1, flexDirection: 'column'}}>
+      <View style={[styles.container, globalStyles.card]}>
         <PositionCard
           user={user}
           deletion={{
@@ -95,44 +96,46 @@ const HomeScreen = ({route}) => {
           newHolding={newHolding}
           resetFields={resetFields}
         />
+      </View>
 
+      <Modalize ref={modalizeState} snapPoint={500}>
+        <View style={[styles.modalizeContainer, {marginTop: 15}]}>
+          <Text style={styles.titleText}> Add a new position </Text>
+          <FormInput
+            value={newHolding.ticker}
+            onChangeText={value => onFieldChange({name: 'ticker', value})}
+            placeholder="Ticker"
+            autoCorrect={false}
+          />
+          <FormInput
+            value={newHolding.numShares}
+            onChangeText={value => onFieldChange({name: 'numShares', value})}
+            placeholder="Number of Shares"
+            autoCorrect={false}
+            keyBoardType="numeric"
+          />
+          <FormInput
+            value={newHolding.avgPrice}
+            onChangeText={value => onFieldChange({name: 'avgPrice', value})}
+            placeholder="Average Price"
+            autoCorrect={false}
+            keyBoardType="numeric"
+          />
+          <FormInput
+            value={newHolding.tag}
+            onChangeText={value => onFieldChange({name: 'tag', value})}
+            placeholder="Tag"
+            autoCorrect={false}
+          />
+          <FormButton buttonTitle="Save" onPress={addPosition} />
+        </View>
+      </Modalize>
+
+      <View style={styles.buttonContainer}>
         <FormButton
           buttonTitle="Add Position"
           onPress={() => modalizeState.current?.open()}
         />
-
-        <Modalize ref={modalizeState} snapPoint={500}>
-          <View style={styles.container}>
-            <Text style={styles.titleText}> Add a new position </Text>
-            <FormInput
-              value={newHolding.ticker}
-              onChangeText={value => onFieldChange({name: 'ticker', value})}
-              placeholder="Ticker"
-              autoCorrect={false}
-            />
-            <FormInput
-              value={newHolding.numShares}
-              onChangeText={value => onFieldChange({name: 'numShares', value})}
-              placeholder="Number of Shares"
-              autoCorrect={false}
-              keyBoardType="numeric"
-            />
-            <FormInput
-              value={newHolding.avgPrice}
-              onChangeText={value => onFieldChange({name: 'avgPrice', value})}
-              placeholder="Average Price"
-              autoCorrect={false}
-              keyBoardType="numeric"
-            />
-            <FormInput
-              value={newHolding.tag}
-              onChangeText={value => onFieldChange({name: 'tag', value})}
-              placeholder="Tag"
-              autoCorrect={false}
-            />
-            <FormButton buttonTitle="Save" onPress={addPosition} />
-          </View>
-        </Modalize>
         <FormButton buttonTitle="Logout" onPress={() => logout()} />
       </View>
     </SafeAreaView>
@@ -143,19 +146,36 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
+    margin: 20,
+    height: '75%',
+    // alignSelf: 'flex-end',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+  },
+  modalizeContainer: {
+    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+  },
+  buttonContainer: {
+    // backgroundColor: 'red',
+    paddingHorizontal: 20,
+    height: 'auto',
+    alignItems: 'center',
+    marginTop: 'auto',
   },
   titleText: {
     paddingBottom: 20,
     fontSize: 25,
+    fontWeight: '500',
   },
-  // boxWithShadow: {
-  //   shadowColor: '#000',
-  //   shadowOffset: { width: 0, height: 1 },
-  //   shadowOpacity: 0.8,
-  //   shadowRadius: 2,
-  //   elevation: 5,
-  // },
+  card: {
+    borderRadius: 20,
+    elevation: 3,
+    backgroundColor: '#fff',
+    shadowOffset: {width: 3, height: 3},
+    shadowColor: '#333',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  },
 });

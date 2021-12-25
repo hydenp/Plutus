@@ -132,12 +132,13 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
   return (
     <View style={styles.container}>
       <View style={styles.position}>
-        <Text style={styles.positionFont}>Hi Name </Text>
+        <Text style={styles.positionFont}>Position </Text>
         <Text style={styles.positionFont}>{formatter.format(position)}</Text>
       </View>
 
       {/*Render the list of Holdings*/}
       <FlatList
+        style={styles.flatList}
         data={holdingList}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -150,10 +151,10 @@ export default PositionCard;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    flex: 1,
+    padding: 20,
     flexDirection: 'column',
     width: '100%',
-    height: '80%',
     color: 'white',
     borderRadius: 5,
     dropShadow: 5,
@@ -163,6 +164,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 5,
+  },
+  flatList: {
+    flexGrow: 0,
   },
   positionFont: {
     fontWeight: 'bold',

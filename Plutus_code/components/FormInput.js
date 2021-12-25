@@ -21,16 +21,13 @@ export default FormInput;
 
 const styles = StyleSheet.create({
   inputContainer: {
-    marginTop: 5,
-    marginBottom: 10,
+    margin: 10,
     width: '100%',
     height: windowHeight / 15,
-    borderColor: '#ccc',
     borderRadius: 8,
-    borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#DDDDDD',
   },
   input: {
     padding: 10,

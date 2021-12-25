@@ -43,15 +43,14 @@ export default HoldingCard;
 
 const styles = StyleSheet.create({
   container: {
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 10,
     marginTop: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
     height: 50,
-    backgroundColor: '#C4C4C4',
+    backgroundColor: '#DDDDDD',
     borderRadius: 8,
   },
   holdingFont: {

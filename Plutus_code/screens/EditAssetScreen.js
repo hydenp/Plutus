@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
+import {globalStyles} from '../utils/styles';
 
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
@@ -30,14 +31,14 @@ const EditAssetScreen = ({navigation, route}) => {
       id: '1',
       label: 'Overwrite',
       value: 'option1',
-      color: 'grey',
+      color: '#DDDDDD',
       selected: true,
     },
     {
       id: '2',
       label: 'Add',
       value: 'option2',
-      color: 'grey',
+      color: '#DDDDDD',
       selected: false,
       disabled: holdingInfo.avgPrice === null || holdingInfo.avgPrice === 'Nan',
     },
@@ -123,14 +124,15 @@ const EditAssetScreen = ({navigation, route}) => {
   return (
     <SafeAreaView>
       <TouchableOpacity
+        style={[styles.backButton, globalStyles.card, {borderRadius: 8}]}
         onPress={() =>
           navigation.navigate('Plutus', {
             updateInfo: updateInfo === null ? null : updateInfo,
           })
         }>
-        <Text>Back</Text>
+        <Text style={styles.backButtonText}> Back</Text>
       </TouchableOpacity>
-      <View style={styles.container}>
+      <View style={[styles.container, globalStyles.card, {margin: 20}]}>
         <Text style={styles.titleText}> {holdingInfo.ticker} </Text>
         <Text style={styles.mktValueText}>
           {' '}
@@ -152,27 +154,29 @@ const EditAssetScreen = ({navigation, route}) => {
             ? 'N/A'
             : holdingInfo.tag}{' '}
         </Text>
-        <FormInput
-          labelValue={updateNumShare}
-          onChangeText={updateNumShareValue =>
-            setUpdateNumShare(
-              updateNumShareValue.length === 0 ? null : updateNumShareValue,
-            )
-          }
-          placeholder={'Number of Shares'}
-          autoCorrect={false}
-        />
-        <FormInput
-          labelValue={updateAvgPrice}
-          onChangeText={updateAvgPrice =>
-            setUpdateAvgPrice(
-              updateAvgPrice.length === 0 ? null : updateAvgPrice,
-            )
-          }
-          placeholder={'Average Price'}
-          autoCorrect={false}
-        />
-        <View>
+
+        <View style={styles.updateAssetContainer}>
+          <FormInput
+            labelValue={updateNumShare}
+            onChangeText={updateNumShareValue =>
+              setUpdateNumShare(
+                updateNumShareValue.length === 0 ? null : updateNumShareValue,
+              )
+            }
+            placeholder={'Number of Shares'}
+            autoCorrect={false}
+          />
+          <FormInput
+            labelValue={updateAvgPrice}
+            onChangeText={updateAvgPrice =>
+              setUpdateAvgPrice(
+                updateAvgPrice.length === 0 ? null : updateAvgPrice,
+              )
+            }
+            placeholder={'Average Price'}
+            autoCorrect={false}
+          />
+
           <RadioGroup
             radioButtons={radioButtons}
             onPress={onPressRadioButton}
@@ -211,15 +215,37 @@ export default EditAssetScreen;
 
 const styles = StyleSheet.create({
   container: {
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
     paddingTop: 50,
   },
+  backButton: {
+    borderRadius: 8,
+    marginLeft: 20,
+    padding: 10,
+    width: '17%',
+    height: 'auto',
+    backgroundColor: '#DDDDDD',
+  },
+  backButtonText: {
+    textAlign: 'center',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
   titleText: {
     paddingBottom: 20,
     fontSize: 25,
     fontWeight: 'bold',
+  },
+  updateAssetContainer: {
+    borderRadius: 8,
+    padding: 5,
+    marginHorizontal: 10,
+    marginVertical: 5,
+    backgroundColor: '#F6F6F6',
+    alignItems: 'center',
   },
   bodyText: {
     justifyContent: 'flex-start',
