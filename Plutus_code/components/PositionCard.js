@@ -11,6 +11,7 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
   const {user, logout} = useContext(AuthContext);
   const [holdingList, setHoldingList] = useState([]);
   const [position, setPosition] = useState(0.0);
+  const [refreshStatus, setRefreshStatus] = useState(false);
 
   const findTicker = ticker => {
     for (const key in holdingList) {
@@ -52,9 +53,12 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
     }
   }, [newHolding.submit]);
 
-  // load list on component mount
-  // empty dependency array
-  useEffect(() => {
+  const refreshList = () => {
+    setRefreshStatus(true);
+    getList();
+  };
+
+  const getList = () => {
     Firebase.fetchData(user).then(querySnapshot => {
       const list = [];
       querySnapshot.forEach(doc => {
@@ -62,7 +66,14 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
         list.push(nextAsset);
       });
       setHoldingList(list);
+      setRefreshStatus(false);
     });
+  };
+
+  // load list on component mount
+  // empty dependency array
+  useEffect(() => {
+    getList();
   }, []);
 
   // watch for deletion prompt
@@ -103,6 +114,7 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
   };
 
   const updatePrices = () => {
+    console.log('getting prices');
     for (const key in holdingList) {
       TickerInfo.getData(holdingList[key].ticker)
         .then(res => {
@@ -120,12 +132,21 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
 
   useEffect(() => {
     updatePrices();
-    updatePosition();
   }, [holdingList.length]);
 
+  // update prices when list is loaded
+  useEffect(() => {
+    if (refreshStatus === false) {
+      updatePrices();
+    }
+  }, [refreshStatus]);
+
+  // update the position whenever the list if changed
   useEffect(() => {
     updatePosition();
   }, [holdingList]);
+
+  useEffect(() => {}, [holdingList.length]);
 
   const renderItem = ({item}) => <HoldingCard key={item.id} data={item} />;
 
@@ -142,6 +163,8 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
         data={holdingList}
         renderItem={renderItem}
         keyExtractor={item => item.id}
+        refreshing={refreshStatus}
+        onRefresh={refreshList}
       />
     </View>
   );

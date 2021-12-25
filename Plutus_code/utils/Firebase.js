@@ -1,16 +1,18 @@
 import React from 'react';
-import firestore, {firebase} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 class Firebase {
   // add a new asset to firebase
   static addAssets(user, {ticker, numShares, avgPrice, tag}) {
+    console.log(numShares);
+    console.log(isNaN(numShares) ? parseFloat(numShares) : null);
     return firestore()
       .collection('assets')
       .add({
         userId: user.uid,
         ticker: ticker,
-        numShares: isNaN(numShares) ? parseFloat(numShares) : null,
-        avgPrice: isNaN(avgPrice) ? parseFloat(avgPrice) : null,
+        numShares: isNaN(numShares) ? null : parseFloat(numShares),
+        avgPrice: isNaN(avgPrice) ? null : parseFloat(avgPrice),
         tag: tag,
       });
   }
@@ -34,42 +36,6 @@ class Firebase {
       });
     });
   }
-
-  // static editAsset(assetFirebaseID, changeNumSharesVal, changeTagVal) {
-  //   if (changeNumSharesVal != null) {
-  //     firestore()
-  //       .collection('assets')
-  //       .doc(assetFirebaseID)
-  //       .update({
-  //         numShare: changeNumSharesVal,
-  //       })
-  //       .then(() => {
-  //         console.log('Asset updated correctly');
-  //       });
-  //   }
-  //   if (changeTagVal != null) {
-  //     firestore()
-  //       .collection('assets')
-  //       .doc(assetFirebaseID)
-  //       .update({
-  //         tag: changeTagVal,
-  //       })
-  //       .then(() => {
-  //         console.log('Asset updated correctly');
-  //       })
-  //       .catch(error => {
-  //         console.log('Error updating assets');
-  //       });
-  //   }
-  // }
-
-  // static deleteAsset(assetFirebaseID) {
-  //   if (assetFirebaseID == null) {
-  //     console.log('Error: asset id not found');
-  //   } else {
-  //     firestore().collection('assets').doc(assetFirebaseID).delete();
-  //   }
-  // }
 
   static deleteAsset(ticker, userID) {
     const doc_query = firestore()
