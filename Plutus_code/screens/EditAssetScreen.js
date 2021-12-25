@@ -5,6 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import {globalStyles} from '../utils/Styles';
@@ -34,7 +35,6 @@ const EditAssetScreen = ({navigation, route}) => {
       label: 'Overwrite',
       value: 'option1',
       color: '#DDDDDD',
-      // color: '#333',
       selected: true,
     },
     {
@@ -42,7 +42,6 @@ const EditAssetScreen = ({navigation, route}) => {
       label: 'Add',
       value: 'option2',
       color: '#DDDDDD',
-      // color: '#333',
       selected: false,
       disabled: holdingInfo.avgPrice === null || holdingInfo.avgPrice === 'Nan',
     },
@@ -65,7 +64,7 @@ const EditAssetScreen = ({navigation, route}) => {
         'Please enter numeric values for the Number of Shares and Average Price',
       );
     } else {
-      const payload = {
+      let payload = {
         ...(updateNumShare !== null && {numShares: parseFloat(updateNumShare)}),
         ...(updateAvgPrice !== null && {avgPrice: parseFloat(updateAvgPrice)}),
         ...(updateTag !== null && {tag: updateTag.toUpperCase()}),
@@ -73,6 +72,9 @@ const EditAssetScreen = ({navigation, route}) => {
 
       if (radioButtons[0].selected === true) {
         console.log('overwrite!');
+        if (updateAvgPrice === null && updateTag === null) {
+          payload.avgPrice = null;
+        }
         Firebase.updateAsset(user, holdingInfo.ticker, payload);
 
         const newState = Object.assign({}, holdingInfo, {
@@ -127,12 +129,7 @@ const EditAssetScreen = ({navigation, route}) => {
 
   useEffect(() => {
     //  ROI = net return / cost
-    console.log('hello');
-    console.log(route.params.price);
-    console.log(route.params.avgPrice);
-    // console.log(route.params.price)
-    const netReturn = calcRIO();
-    setInvestmentROI(netReturn * 100);
+    setInvestmentROI(calcRIO() * 100);
   }, [updateAvgPrice, updateNumShare, route.params, updateInfo]);
 
   // update saved button depending on what info is entered
@@ -174,47 +171,61 @@ const EditAssetScreen = ({navigation, route}) => {
       </TouchableOpacity>
       <View style={[styles.container, globalStyles.card, {margin: 20}]}>
         <Text style={styles.titleText}>{holdingInfo.ticker}</Text>
-        <View style={styles.updateAssetContainer}>
-          <View style={styles.infoContainer}>
-            <Text style={[styles.bodyText, {textAlign: 'left'}]}>
-              Position Market Value
-            </Text>
-            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
-              {formatter.format(holdingInfo.price * holdingInfo.numShares)}
-            </Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={[styles.bodyText, {textAlign: 'left'}]}>
-              Number of Shares
-            </Text>
-            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
-              {holdingInfo.numShares}
-            </Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={[styles.bodyText, {textAlign: 'left'}]}>
-              Current Price
-            </Text>
-            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
-              {formatter.format(holdingInfo.price)}
-            </Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={[styles.bodyText, {textAlign: 'left'}]}>Returns</Text>
-            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
-              {!isNaN(investmentROI)
-                ? parseFloat(investmentROI).toFixed(2) + '%'
-                : 'N/A'}
-            </Text>
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={[styles.bodyText, {textAlign: 'left'}]}>Tag</Text>
-            <Text style={[styles.bodyText, {textAlign: 'right'}]}>
-              {holdingInfo.tag === null || holdingInfo.tag.length === 0
-                ? 'N/A'
-                : holdingInfo.tag}{' '}
-            </Text>
-          </View>
+        <View style={styles.assetInfoContainer}>
+          <ScrollView
+            style={styles.scrollStyle}
+            showsVerticalScrollIndicator={false}>
+            <View style={styles.infoContainer}>
+              <Text style={[styles.bodyText, {textAlign: 'left'}]}>
+                Holding Market Value
+              </Text>
+              <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+                {formatter.format(holdingInfo.price * holdingInfo.numShares)}
+              </Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={[styles.bodyText, {textAlign: 'left'}]}>
+                Average Price
+              </Text>
+              <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+                {holdingInfo.avgPrice === null
+                  ? 'N/A'
+                  : formatter.format(holdingInfo.avgPrice)}
+              </Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={[styles.bodyText, {textAlign: 'left'}]}>
+                Number of Shares
+              </Text>
+              <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+                {holdingInfo.numShares}
+              </Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={[styles.bodyText, {textAlign: 'left'}]}>
+                Current Price
+              </Text>
+              <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+                {formatter.format(holdingInfo.price)}
+              </Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={[styles.bodyText, {textAlign: 'left'}]}>ROI</Text>
+              <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+                {!isNaN(investmentROI)
+                  ? parseFloat(investmentROI).toFixed(2) + '%'
+                  : 'N/A'}
+              </Text>
+            </View>
+            <View style={[styles.infoContainer, {paddingBottom: 20}]}>
+              <Text style={[styles.bodyText, {textAlign: 'left'}]}>Tag</Text>
+              <Text style={[styles.bodyText, {textAlign: 'right'}]}>
+                {holdingInfo.tag === null || holdingInfo.tag.length === 0
+                  ? 'N/A'
+                  : holdingInfo.tag}{' '}
+              </Text>
+            </View>
+          </ScrollView>
         </View>
 
         <View style={styles.updateAssetContainer}>
@@ -300,6 +311,17 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
   },
+  assetInfoContainer: {
+    height: 170,
+    width: '100%',
+    borderRadius: 8,
+    padding: 10,
+    paddingBottom: 10,
+    marginHorizontal: 10,
+    marginVertical: 5,
+    backgroundColor: '#F6F6F6',
+    alignItems: 'center',
+  },
   updateAssetContainer: {
     width: '100%',
     borderRadius: 8,
@@ -309,6 +331,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
     alignItems: 'center',
   },
+  scrollStyle: {
+    paddingHorizontal: 5,
+  },
   infoContainer: {
     width: '90%',
     flexDirection: 'row',
@@ -317,7 +342,8 @@ const styles = StyleSheet.create({
   bodyText: {
     width: '50%',
     margin: 2,
-    paddingBottom: 5,
+    // paddingBottom: 5,
+    padding: 3,
     fontSize: 15,
   },
 });

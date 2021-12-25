@@ -27,7 +27,7 @@ const LoginScreen = ({navigation}) => {
             styles.titleText,
             {fontSize: 18, marginVertical: 10, textAlign: 'center'},
           ]}>
-          Enter credentials or Create an Account
+          Enter your Credentials
         </Text>
         <FormInput
           labelValue={email}

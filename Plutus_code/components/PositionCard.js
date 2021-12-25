@@ -114,7 +114,6 @@ const PositionCard = ({newHolding, resetFields, deletion, updates}) => {
   };
 
   const updatePrices = () => {
-    console.log('getting prices');
     for (const key in holdingList) {
       TickerInfo.getData(holdingList[key].ticker)
         .then(res => {
