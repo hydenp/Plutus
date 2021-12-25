@@ -36,7 +36,7 @@ const LoginScreen = ({navigation}) => {
           secureTextEntry={true}
         />
         <FormButton
-          buttonTitle="Sign In"
+          buttonTitle="Login"
           onPress={() => login(email, password)}
         />
         <TouchableOpacity
