@@ -39,11 +39,15 @@ const SignupScreen = () => {
         // flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        marginTop: 120,
+        marginTop: 80,
         alignItems: 'center',
       }}>
+      <Text style={styles.titleText}>Welcome to</Text>
+      <Text style={[styles.titleText, {fontWeight: 'bold'}]}>Plutus</Text>
       <View style={[styles.container, globalStyles.card]}>
-        <Text style={styles.text}>Create an account</Text>
+        <Text style={[styles.titleText, {fontSize: 18, marginVertical: 10}]}>
+          Create an Account
+        </Text>
         <FormInput
           labelValue={email}
           onChangeText={userEmail => setEmail(userEmail)}
@@ -75,24 +79,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'stretch',
     padding: 20,
-    paddingTop: 50,
-    margin: 20,
+    margin: 30,
   },
-  logo: {
-    height: 150,
-    width: 150,
-    resizeMode: 'cover',
-  },
-  text: {
+  titleText: {
     fontSize: 28,
-    marginBottom: 10,
-    color: '#051d5f',
-  },
-  navButton: {
-    marginTop: 15,
-  },
-  forgotButton: {
-    marginVertical: 35,
   },
   navButtonText: {
     fontSize: 18,

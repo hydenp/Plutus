@@ -32,6 +32,7 @@ const EditAssetScreen = ({navigation, route}) => {
       label: 'Overwrite',
       value: 'option1',
       color: '#DDDDDD',
+      // color: '#333',
       selected: true,
     },
     {
@@ -39,6 +40,7 @@ const EditAssetScreen = ({navigation, route}) => {
       label: 'Add',
       value: 'option2',
       color: '#DDDDDD',
+      // color: '#333',
       selected: false,
       disabled: holdingInfo.avgPrice === null || holdingInfo.avgPrice === 'Nan',
     },
@@ -124,7 +126,11 @@ const EditAssetScreen = ({navigation, route}) => {
   return (
     <SafeAreaView>
       <TouchableOpacity
-        style={[styles.backButton, globalStyles.card, {borderRadius: 8}]}
+        style={[
+          styles.backButton,
+          globalStyles.card,
+          {borderRadius: 8, shadowOpacity: 0.15},
+        ]}
         onPress={() =>
           navigation.navigate('Plutus', {
             updateInfo: updateInfo === null ? null : updateInfo,

@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
+import {globalStyles} from '../utils/styles';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState();
@@ -13,20 +14,28 @@ const LoginScreen = ({navigation}) => {
   return (
     <View
       style={{
-        // flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        marginTop: 120,
+        marginTop: 150,
         alignItems: 'center',
       }}>
-      <View style={[styles.container, styles.card]}>
-        <Text style={styles.titleText}>Plutus</Text>
+      <Text style={styles.titleText}>Welcome to</Text>
+      <Text style={[styles.titleText, {fontWeight: 'bold'}]}>Plutus</Text>
+      <View style={[styles.container, globalStyles.card]}>
+        <Text
+          style={[
+            styles.titleText,
+            {fontSize: 18, marginVertical: 10, textAlign: 'center'},
+          ]}>
+          Enter credentials or Create an Account
+        </Text>
         <FormInput
           labelValue={email}
           onChangeText={userEmail => setEmail(userEmail)}
           placeholder="Email"
           keyboardType="email-address"
-          autoCapitalize="none"
+          aautoCapitalize="none"
+          secureTextEntry={false}
           autoCorrect={false}
         />
         <FormInput
@@ -40,9 +49,9 @@ const LoginScreen = ({navigation}) => {
           onPress={() => login(email, password)}
         />
         <TouchableOpacity
-          style={styles.forgotButton}
+          style={styles.createAccountButton}
           onPress={() => navigation.navigate('Signup')}>
-          <Text style={styles.navButtonText}>Create account</Text>
+          <Text style={styles.createAccountButtonText}>Create Account</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -58,7 +67,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     padding: 20,
     margin: 30,
-    paddingTop: 50,
   },
   card: {
     borderRadius: 20,
@@ -69,26 +77,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
   },
-  logo: {
-    height: 150,
-    width: 150,
-    resizeMode: 'cover',
-  },
   titleText: {
     fontSize: 28,
-    marginBottom: 20,
-    color: '#051d5f',
-    fontWeight: 'bold',
   },
   navButton: {
     marginTop: 15,
   },
-  forgotButton: {
+  createAccountButton: {
     marginVertical: 15,
+    color: '#37C87A',
   },
-  navButtonText: {
+  createAccountButtonText: {
     fontSize: 18,
-    fontWeight: '500',
-    color: '#2e64e5',
+    fontWeight: 'bold',
+    color: '#37C87A',
   },
 });
