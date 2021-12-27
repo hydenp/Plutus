@@ -4,7 +4,6 @@ import firestore from '@react-native-firebase/firestore';
 class Firebase {
   // add a new asset to firebase
   static addAssets(user, {ticker, numShares, avgPrice, tag}) {
-    console.log(numShares);
     console.log(isNaN(numShares) ? parseFloat(numShares) : null);
     return firestore()
       .collection('assets')
