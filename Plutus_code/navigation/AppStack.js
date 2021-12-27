@@ -23,13 +23,6 @@ const AppStack = () => {
           headerShown: false,
         })}
       />
-      <Stack.Screen
-        name="Signup"
-        component={SignupScreen}
-        options={() => ({
-          headerShown: false,
-        })}
-      />
     </Stack.Navigator>
   );
 };
