@@ -1,5 +1,5 @@
 # Plutus
-A basic portfolio tracking app built with React Native. This project was originall created for a final class with our full team, and then continued on by my self (Hyden). The final version of the app turned in for the class by the team and I can be found at this commit [here](https://github.com/hydenp/Plutus/tree/8f8d8eaa368a7bc7f6529b54fa447442a599f798)
+A basic portfolio tracking app built with React Native. This project was originally created for a final class with our full team, and then continued on by my self (Hyden). The final version of the app turned in for the class by the team and I can be found at this commit [here](https://github.com/hydenp/Plutus/tree/8f8d8eaa368a7bc7f6529b54fa447442a599f798)
 
 ## Team Members
 - Hyden Polikoff
@@ -10,7 +10,9 @@ A basic portfolio tracking app built with React Native. This project was origina
 The original Figma mockup idea is [here!](https://www.figma.com/file/XxHy0nElpNcQqu0oRtdeTA/UI-Mockup?node-id=0%3A1)
 ## App Preview/Walkthrough
 Checkout this brief walkthrough of the app and its functionality<br>
-```add brief video here. record when markets open```
+
+https://user-images.githubusercontent.com/63132164/147501558-57122701-ffa3-422c-ae69-9bc615d865d3.mp4
+
 
 ## How to run an iOS Simulator
 Note: the following assumes a compatible Node version is installed as well as Xcode
