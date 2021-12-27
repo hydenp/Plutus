@@ -1,22 +1,20 @@
 # Plutus
-Please access the file Project_specifications.pdf in order to view a more detailed description about this project 
+A basic portfolio tracking app built with React Native. This project was originall created for a final class with our full team, and then continued on by my self (Hyden). The final version of the app turned in for the class by the team and I can be found at this commit [here](https://github.com/hydenp/Plutus/tree/8f8d8eaa368a7bc7f6529b54fa447442a599f798)
 
 ## Team Members
+- Hyden Polikoff
 - Lucas Gama
 - Felipe Lima
-- Hyden Polikoff
 
-# Project Summary:
-Project overview: For this project, we decided to create a mobile (based on React Native) application that will act as a simplified portfolio manager. The application will allow users to create an account, log in, register stocks, REITs and funds, keep in track of each stock weight on their portfolio, visualize the rentability of each stock as well as the average cost per stock. The intention is that this application will be used on a recurring basis by investors, therefore, there isn’t a point in which we consider that the application will be “done”. However, after a user interaction, we hope to deliver easy and digestible information about the user’s investment portfolio.
+# Overview
+The original Figma mockup idea is [here!](https://www.figma.com/file/XxHy0nElpNcQqu0oRtdeTA/UI-Mockup?node-id=0%3A1)
+## App Preview/Walkthrough
+Checkout this brief walkthrough of the app and its functionality<br>
+```add brief video here. record when markets open```
 
-# How to run:
-- Clone the 'main' branch to your local computer.
-- On your terminal go to the code location
-- run 'npm install'
-- run 'cd ios' then run 'pod install'
-- run 'cd ..'
-- run 'npm start'
-- on a different terminal window but at the same source location run 'npx react-native run-ios' (only for Mac machines).
-- The iOS simulator should open on your computer and the app Plutus should be running
-
-
+## How to run an iOS Simulator
+Note: the following assumes a compatible Node version is installed as well as Xcode
+- In your terminal navigate to the `Plutus_code` directory and run the following commands
+- `npm install`
+- `cd ios && pod install && cd ..` 
+- `npx react-native run-ios`
