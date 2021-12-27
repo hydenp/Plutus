@@ -7,7 +7,7 @@ A basic portfolio tracking app built with React Native. This project was origina
 - Felipe Lima
 
 # Overview
-The original Figma mockup idea is [here!](https://www.figma.com/file/XxHy0nElpNcQqu0oRtdeTA/UI-Mockup?node-id=0%3A1)
+The original Figma mockup is [here!](https://www.figma.com/file/XxHy0nElpNcQqu0oRtdeTA/UI-Mockup?node-id=0%3A1)
 ## App Preview/Walkthrough
 Checkout this brief walkthrough of the app and its functionality<br>
 
