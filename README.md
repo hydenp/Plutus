@@ -1,5 +1,5 @@
 # Plutus
-A basic portfolio tracking app built with React Native. This project was originally created for a final class with our full team, and then continued on by my self (Hyden). The final version of the app turned in for the class by the team and I can be found at this commit [here](https://github.com/hydenp/Plutus/tree/8f8d8eaa368a7bc7f6529b54fa447442a599f798)
+A basic portfolio tracking app built with React Native. This project was originally created for a final class project with our full team found below, and then continued on by myself (Hyden). The final version of the app turned in for the class by the team and I can be found at this commit [here](https://github.com/hydenp/Plutus/tree/8f8d8eaa368a7bc7f6529b54fa447442a599f798)
 
 ## Team Members
 - Hyden Polikoff
